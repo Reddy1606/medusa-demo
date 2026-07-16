@@ -55,17 +55,12 @@ const OptionsPicker = ({
   }
 
   return (
-    <div className="flex flex-col gap-y-4">
-      <div className="flex items-center justify-between px-1">
-        <span className="txt-compact-small-plus text-ui-fg-subtle">
-          Options
-        </span>
-      </div>
+    <div className="flex flex-col">
       <Accordion.Root
         type="multiple"
         value={openItems}
         onValueChange={(values) => setOpenItems(values as string[])}
-        className="flex flex-col gap-y-3 pr-6"
+        className="flex flex-col divide-y divide-ui-border-base"
       >
         {options.map((option) => {
           const values =
@@ -104,7 +99,7 @@ const OptionsPicker = ({
               className="overflow-hidden"
             >
               <Accordion.Header>
-                <Accordion.Trigger className="flex w-full items-center justify-between py-3 text-left">
+                <Accordion.Trigger className="flex w-full items-center justify-between py-3.5 text-left">
                   <div className="flex items-center gap-2">
                     <span className="txt-compact-small-plus text-ui-fg-base">
                       {option.title || "Option"}
@@ -125,28 +120,31 @@ const OptionsPicker = ({
                   </span>
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Content className="pb-4 pt-1">
-                <div className="flex flex-wrap gap-2">
+              <Accordion.Content className="overflow-hidden pb-4 data-[state=closed]:animate-accordion-close data-[state=open]:animate-accordion-open">
+                <div className="flex flex-col gap-1">
                   {values.map((value) => {
                     const isSelected = selectedValueIds.includes(value.id)
 
                     return (
-                      <button
+                      <label
                         key={value.id}
-                        onClick={() => toggleValue(value.id)}
                         className={clsx(
-                          "border-ui-border-base border text-small-regular h-10 rounded-rounded px-3 flex items-center transition-colors duration-150",
+                          "flex cursor-pointer items-center gap-2.5 rounded-rounded px-2.5 py-2 text-small-regular transition-colors duration-150",
                           {
-                            "border-ui-border-interactive text-ui-fg-base":
-                              isSelected,
-                            "text-ui-fg-muted hover:text-ui-fg-base":
+                            "bg-ui-bg-subtle text-ui-fg-base": isSelected,
+                            "text-ui-fg-subtle hover:bg-ui-bg-subtle hover:text-ui-fg-base":
                               !isSelected,
                           }
                         )}
-                        aria-pressed={isSelected}
                       >
-                        {value.label}
-                      </button>
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => toggleValue(value.id)}
+                          className="h-4 w-4 rounded-base border-ui-border-strong accent-ui-fg-interactive"
+                        />
+                        <span>{value.label}</span>
+                      </label>
                     )
                   })}
                 </div>
