@@ -2,15 +2,16 @@
 
 import { clx } from "@modules/common/components/ui"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { ChevronLeftMini, ChevronRightMini } from "@medusajs/icons"
 
 export function Pagination({
   page,
   totalPages,
-  'data-testid': dataTestid
+  "data-testid": dataTestid,
 }: {
   page: number
   totalPages: number
-  'data-testid'?: string
+  "data-testid"?: string
 }) {
   const router = useRouter()
   const pathname = usePathname()
@@ -35,9 +36,13 @@ export function Pagination({
   ) => (
     <button
       key={p}
-      className={clx("txt-xlarge-plus text-ui-fg-muted", {
-        "text-ui-fg-base hover:text-ui-fg-subtle": isCurrent,
-      })}
+      className={clx(
+        "flex h-10 min-w-10 items-center justify-center rounded-rounded border border-transparent px-3 text-small-regular text-ui-fg-subtle transition-colors hover:border-ui-border-base hover:bg-ui-bg-subtle",
+        {
+          "pointer-events-none border-ui-border-strong bg-ui-bg-subtle font-medium text-ui-fg-base":
+            isCurrent,
+        }
+      )}
       disabled={isCurrent}
       onClick={() => handlePageChange(p)}
     >
@@ -49,7 +54,7 @@ export function Pagination({
   const renderEllipsis = (key: string) => (
     <span
       key={key}
-      className="txt-xlarge-plus text-ui-fg-muted items-center cursor-default"
+      className="flex h-10 min-w-8 cursor-default items-center justify-center text-ui-fg-muted"
     >
       ...
     </span>
@@ -105,10 +110,37 @@ export function Pagination({
     return buttons
   }
 
-  // Render the component
+  const navigationButton = (direction: "previous" | "next") => {
+    const isPrevious = direction === "previous"
+    const disabled = isPrevious ? page <= 1 : page >= totalPages
+    const target = isPrevious ? page - 1 : page + 1
+
+    return (
+      <button
+        type="button"
+        onClick={() => handlePageChange(target)}
+        disabled={disabled}
+        aria-label={`${isPrevious ? "Previous" : "Next"} page`}
+        className="flex h-10 items-center gap-1 rounded-rounded border border-ui-border-base px-3 text-small-regular text-ui-fg-base transition-colors hover:bg-ui-bg-subtle disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        {isPrevious ? <ChevronLeftMini /> : null}
+        <span className="hidden xsmall:inline">
+          {isPrevious ? "Previous" : "Next"}
+        </span>
+        {!isPrevious ? <ChevronRightMini /> : null}
+      </button>
+    )
+  }
+
   return (
-    <div className="flex justify-center w-full mt-12">
-      <div className="flex gap-3 items-end" data-testid={dataTestid}>{renderPageButtons()}</div>
+    <div className="flex justify-center w-full mt-12 border-t border-ui-border-base pt-8">
+      <div className="flex items-center gap-1" data-testid={dataTestid}>
+        {navigationButton("previous")}
+        <div className="mx-1 flex items-center gap-1">
+          {renderPageButtons()}
+        </div>
+        {navigationButton("next")}
+      </div>
     </div>
   )
 }

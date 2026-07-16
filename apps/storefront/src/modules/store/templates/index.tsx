@@ -23,22 +23,38 @@ const StoreTemplate = ({
 
   return (
     <div
-      className="flex flex-col small:flex-row small:items-start py-6 content-container"
+      className="content-container max-w-[1600px] py-7 small:px-8 small:py-9"
       data-testid="category-container"
     >
-      <RefinementList sortBy={sort} />
-      <div className="w-full">
-        <div className="mb-8 text-2xl-semi">
-          <h1 data-testid="store-page-title">All products</h1>
+      <div className="mb-7 border-b border-ui-border-base pb-6 small:mb-8">
+        <h1
+          className="text-3xl font-semibold tracking-tight"
+          data-testid="store-page-title"
+        >
+          All Products
+        </h1>
+        <p className="mt-2 max-w-2xl text-base-regular text-ui-fg-subtle">
+          Browse our latest selection and find something that fits your needs.
+        </p>
+      </div>
+
+      <div className="grid gap-6 small:grid-cols-[220px_minmax(0,1fr)] small:gap-7 medium:grid-cols-[230px_minmax(0,1fr)] medium:gap-8">
+        <RefinementList sortBy={sort} layout="filters" />
+        <div className="min-w-0 w-full">
+          <div className="mb-5 flex items-center justify-between border-b border-ui-border-base pb-4">
+            <h2 className="text-base-semi">Product selection</h2>
+            <RefinementList sortBy={sort} layout="sort" />
+          </div>
+          <Suspense fallback={<SkeletonProductGrid />}>
+            <PaginatedProducts
+              sortBy={sort}
+              page={pageNumber}
+              countryCode={countryCode}
+              optionValueIds={optionValueIds}
+              listingLayout
+            />
+          </Suspense>
         </div>
-        <Suspense fallback={<SkeletonProductGrid />}>
-          <PaginatedProducts
-            sortBy={sort}
-            page={pageNumber}
-            countryCode={countryCode}
-            optionValueIds={optionValueIds}
-          />
-        </Suspense>
       </div>
     </div>
   )

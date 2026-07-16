@@ -8,6 +8,7 @@ type SortProductsProps = {
   sortBy: SortOptions
   setQueryParams: (name: string, value: string) => void
   "data-testid"?: string
+  compact?: boolean
 }
 
 const sortOptions = [
@@ -17,11 +18,11 @@ const sortOptions = [
   },
   {
     value: "price_asc",
-    label: "Price: Low -> High",
+    label: "Price: Low to High",
   },
   {
     value: "price_desc",
-    label: "Price: High -> Low",
+    label: "Price: High to Low",
   },
 ]
 
@@ -29,9 +30,31 @@ const SortProducts = ({
   "data-testid": dataTestId,
   sortBy,
   setQueryParams,
+  compact = false,
 }: SortProductsProps) => {
   const handleChange = (value: string) => {
     setQueryParams("sortBy", value as SortOptions)
+  }
+
+  if (compact) {
+    return (
+      <label className="flex items-center gap-3 text-small-regular text-ui-fg-subtle">
+        <span className="hidden xsmall:inline">Sort by</span>
+        <select
+          value={sortBy}
+          onChange={(event) => handleChange(event.target.value)}
+          className="h-10 rounded-rounded border border-ui-border-base bg-ui-bg-base px-3 pr-8 text-small-regular text-ui-fg-base outline-none transition-colors hover:border-ui-border-strong focus:border-ui-border-interactive"
+          data-testid={dataTestId}
+          aria-label="Sort products"
+        >
+          {sortOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </label>
+    )
   }
 
   return (
