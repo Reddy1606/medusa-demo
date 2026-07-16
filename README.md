@@ -61,83 +61,94 @@ The fastest way to get started is deploying with [Medusa Cloud](https://cloud.me
 1. [Create a Medusa Cloud account](https://cloud.medusajs.com)
 2. Deploy this starter directly from your dashboard
 
-### Local Installation
 
-> **Prerequisites:
->
-> - [Node.js](https://nodejs.org/) v20+
-> - [PostgreSQL](https://www.postgresql.org/) v15+
-> - [pnpm](https://pnpm.io/) v10+
 
-1. Clone the repository and install dependencies:
+## Local Installation
+
+### Prerequisites
+
+- Node.js v20+
+- PostgreSQL v15+
+- npm v11+
+
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/medusajs/dtc-starter.git
-cd dtc-starter
-pnpm install
+git clone https://github.com/Reddy1606/medusa-demo.git
+cd medusa-demo
 ```
 
-2. Set up environment variables for the backend:
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Configure the backend environment
+
+Copy the backend environment file and update the database connection:
 
 ```bash
 cp apps/backend/.env.template apps/backend/.env
 ```
 
-3. Set the database URL in `apps/backend.env`:
+Edit `apps/backend/.env` and set:
 
-```bash
-# Replace with actual database URL, make sure the database exists.
-DATABASE_URL=postgres://postgres:@localhost:5432/medusa-dtc-starter
+```env
+DATABASE_URL=postgres://postgres:<your_password>@localhost:5432/<your_database>
 ```
 
-4. Run migrations:
-
-```bash
-cd apps/backend
-pnpm medusa db:migrate
-```
-
-5. Add admin user:
+### 4. Run database migrations
 
 ```bash
 cd apps/backend
-pnpm medusa user -e admin@test.com -p supersecret
+npx medusa db:migrate
 ```
 
-6. Start Medusa backend:
+### 5. Create an admin user (if required)
 
 ```bash
-cd apps/backend
-pnpm dev
+npx medusa user -e admin@test.com -p supersecret
 ```
 
-7. Open the admin dashboard at `localhost:9000/app` and log in. Retrieve your publishable API key at Settings > Publishable API key.
+### 6. Start the Medusa backend
 
-8. Set up environment variables for the storefront:
+```bash
+npm run dev
+```
+
+The backend and Admin Dashboard will be available at:
+
+```
+http://localhost:9000
+http://localhost:9000/app
+```
+
+### 7. Configure the storefront
+
+Copy the storefront environment file:
 
 ```bash
 cp apps/storefront/.env.template apps/storefront/.env.local
 ```
 
-9. Update `apps/storefront/.env.local` with your Medusa publishable API key:
+Update:
 
-```bash
-NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_6c3...
+```env
+NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=<your_publishable_key>
 ```
 
-10.  Start storefront:
+### 8. Start the storefront
 
 ```bash
-cd apps/storefront
-pnpm dev
+cd ../storefront
+npm run dev
 ```
 
-The storefront runs on `http://localhost:8000`.
+The storefront will be available at:
 
-You can slo run the following command from the root to start both backend and storefront:
-
-```bash
-pnpm dev
+```
+http://localhost:8000
 ```
 
 ## Configuration
