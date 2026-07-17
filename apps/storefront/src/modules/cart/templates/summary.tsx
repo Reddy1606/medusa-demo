@@ -13,32 +13,55 @@ type SummaryProps = {
 }
 
 function getCheckoutStep(cart: HttpTypes.StoreCart) {
-  if (!cart?.shipping_address?.address_1 || !cart.email) {
+  if (!cart.shipping_address?.address_1 || !cart.email) {
     return "address"
-  } else if (cart?.shipping_methods?.length === 0) {
-    return "delivery"
-  } else {
-    return "payment"
   }
+
+  if (!cart.shipping_methods?.length) {
+    return "delivery"
+  }
+
+  return "payment"
 }
 
 const Summary = ({ cart }: SummaryProps) => {
   const step = getCheckoutStep(cart)
 
   return (
-    <div className="flex flex-col gap-y-4">
-      <Heading level="h2" className="text-[2rem] leading-[2.75rem]">
-        Summary
-      </Heading>
-      <DiscountCode cart={cart} />
+    <div className="flex flex-col gap-y-5">
+      <div>
+        <Heading level="h2" className="text-2xl font-semibold leading-tight">
+          Tóm tắt đơn hàng
+        </Heading>
+
+        <p className="mt-1 text-sm text-ui-fg-subtle">
+          Kiểm tra thông tin trước khi thanh toán
+        </p>
+      </div>
+
+      <div className="rounded-lg bg-gray-50 p-4">
+        <DiscountCode cart={cart} />
+      </div>
+
       <Divider />
+
       <CartTotals totals={cart} />
+
+      <Divider />
+
       <LocalizedClientLink
-        href={"/checkout?step=" + step}
+        href={`/checkout?step=${step}`}
         data-testid="checkout-button"
+        className="block"
       >
-        <Button className="w-full h-10">Go to checkout</Button>
+        <Button className="h-12 w-full text-base font-semibold">
+          Tiến hành thanh toán
+        </Button>
       </LocalizedClientLink>
+
+      <p className="text-center text-xs text-ui-fg-subtle">
+        Bạn sẽ được chuyển đến trang nhập địa chỉ và phương thức thanh toán.
+      </p>
     </div>
   )
 }
