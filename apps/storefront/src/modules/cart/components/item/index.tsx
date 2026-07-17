@@ -98,28 +98,26 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
               }
               className="h-10 w-16 rounded-md border px-2"
               data-testid="product-select-button"
-            >
-              {Array.from(
-                {
-                  length: Math.min(maxQuantity, 10),
-                },
-                (_, index) => (
-                  <option value={index + 1} key={index + 1}>
-                    {index + 1}
-                  </option>
-                )
-              )}
-            </CartItemSelect>
+          >
+            {Array.from(
+              {
+                length: Math.min(maxQuantity, 10),
+              },
+              (_, index) => (
+              <option value={index + 1} key={index + 1}>
+                {index + 1}
+              </option>
+            )
+          )}
+        </CartItemSelect>
 
-            {updating && <Spinner />}
-          </div>
+        {updating && <Spinner />}
 
-          <div className="mt-2">
-            <DeleteButton
-              id={item.id}
-              data-testid="product-delete-button"
-            />
-          </div>
+        <DeleteButton
+          id={item.id}
+          data-testid="product-delete-button"
+        />
+      </div>
 
           <ErrorMessage
             error={error}

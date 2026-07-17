@@ -16,7 +16,7 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
     <div>
       <div className="flex items-center justify-between border-b pb-4">
         <Heading className="text-2xl font-semibold leading-tight">
-          Giỏ hàng của bạn
+          Shopping Cart
         </Heading>
 
         <span className="text-sm text-ui-fg-subtle">
@@ -28,21 +28,21 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
         <Table.Header className="border-t-0">
           <Table.Row className="txt-medium-plus text-ui-fg-subtle">
             <Table.HeaderCell className="!pl-0">
-              Sản phẩm
+              Product
             </Table.HeaderCell>
 
             <Table.HeaderCell />
 
             <Table.HeaderCell>
-              Số lượng
+              Quantity
             </Table.HeaderCell>
 
             <Table.HeaderCell className="hidden small:table-cell">
-              Đơn giá
+              Unit Price
             </Table.HeaderCell>
 
             <Table.HeaderCell className="!pr-0 text-right">
-              Thành tiền
+              Total
             </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
