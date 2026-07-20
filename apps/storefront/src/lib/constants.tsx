@@ -30,7 +30,7 @@ export const paymentInfoMap: Record<
     icon: <PayPal />,
   },
   pp_system_default: {
-    title: "Manual Payment",
+    title: "Chuyển khoản VietQR",
     icon: <CreditCard />,
   },
   // Add more payment providers here
