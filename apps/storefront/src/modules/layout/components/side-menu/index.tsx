@@ -11,10 +11,10 @@ import CountrySelect from "../country-select"
 import LanguageSelect from "../language-select"
 import { Locale } from "@lib/data/locales"
 
-
 const SideMenuItems = {
   Home: "/",
   Store: "/store",
+  "Tra cứu đơn hàng": "/order-tracking",
   Account: "/account",
   Cart: "/cart",
 }
