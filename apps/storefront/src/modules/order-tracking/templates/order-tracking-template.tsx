@@ -73,9 +73,9 @@ export default function OrderTrackingTemplate() {
   const showingDetail = viewState.startsWith("detail")
 
   return (
-    <div className="content-container py-12 small:py-20">
+    <main className="tixi-page tixi-tracking px-6 py-12 small:py-20">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-10">
-        <header className="text-center">
+        <header className="rounded-[32px] bg-gradient-to-br from-[#fff7d6] to-[#f4bf28] px-6 py-12 text-center shadow-[0_12px_40px_rgba(98,67,0,0.10)] small:px-10">
           <Heading level="h1">Tra cứu đơn hàng</Heading>
           <Text className="mt-3 text-ui-fg-subtle">
             Nhập email và số điện thoại đã dùng khi đặt hàng.
@@ -83,7 +83,7 @@ export default function OrderTrackingTemplate() {
         </header>
 
         {!showingDetail && (
-          <div className="rounded-lg border border-ui-border-base bg-white p-6 small:p-8">
+          <div className="tixi-card p-6 small:p-8">
             <TrackingForm
               isLoading={viewState === "loading"}
               onSubmit={handleLookup}
@@ -144,6 +144,6 @@ export default function OrderTrackingTemplate() {
           <OrderDetail order={selectedOrder} onBack={handleBack} />
         )}
       </div>
-    </div>
+    </main>
   )
 }

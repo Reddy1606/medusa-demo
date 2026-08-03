@@ -36,11 +36,14 @@ export default async function ProductPreview({
           size="full"
           isFeatured={isFeatured}
         />
-        <div className="flex txt-compact-medium mt-4 justify-between">
-          <Text className="text-ui-fg-subtle" data-testid="product-title">
+        <div className="mt-4 flex flex-col gap-2 px-1 pb-1 xsmall:flex-row xsmall:justify-between">
+          <Text
+            className="font-medium text-black transition group-hover:text-[#9a6800]"
+            data-testid="product-title"
+          >
             {product.title}
           </Text>
-          <div className="flex items-center gap-x-2">
+          <div className="flex shrink-0 items-center gap-x-2 font-semibold text-black">
             {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
           </div>
         </div>

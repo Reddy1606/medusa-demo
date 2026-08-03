@@ -17,9 +17,14 @@ const Login = ({ setCurrentView }: Props) => {
       className="max-w-sm w-full flex flex-col items-center"
       data-testid="login-page"
     >
-      <h1 className="text-large-semi uppercase mb-6">Welcome back</h1>
+      <span className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#a87200]">
+        Tài khoản TIXIMAX
+      </span>
+      <h1 className="mb-4 text-3xl font-semibold tracking-[-0.03em]">
+        Chào mừng bạn trở lại
+      </h1>
       <p className="text-center text-base-regular text-ui-fg-base mb-8">
-        Sign in to access an enhanced shopping experience.
+        Đăng nhập để quản lý thông tin và theo dõi đơn hàng thuận tiện hơn.
       </p>
       {message?.state === "verification_required" && (
         <div
@@ -55,17 +60,17 @@ const Login = ({ setCurrentView }: Props) => {
           data-testid="login-error-message"
         />
         <SubmitButton data-testid="sign-in-button" className="w-full mt-6">
-          Sign in
+          Đăng nhập
         </SubmitButton>
       </form>
       <span className="text-center text-ui-fg-base text-small-regular mt-6">
-        Not a member?{" "}
+        Chưa có tài khoản?{" "}
         <button
           onClick={() => setCurrentView(LOGIN_VIEW.REGISTER)}
           className="underline"
           data-testid="register-button"
         >
-          Join us
+          Đăng ký
         </button>
         .
       </span>

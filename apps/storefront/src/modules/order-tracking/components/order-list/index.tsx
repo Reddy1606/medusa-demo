@@ -31,7 +31,7 @@ export default function OrderList({ orders, onSelect }: OrderListProps) {
                 onSelect(order.tracking_id)
               }
             }}
-            className="cursor-pointer border border-ui-border-base p-5 shadow-none transition-colors hover:bg-ui-bg-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ui-fg-interactive"
+            className="cursor-pointer rounded-2xl border border-black/10 bg-white p-5 shadow-[0_8px_28px_rgba(17,17,17,0.05)] transition duration-200 hover:-translate-y-1 hover:border-[#e0aa16] hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e0aa16]"
           >
             <div className="flex flex-col gap-4 small:flex-row small:items-start small:justify-between">
               <div>
@@ -81,6 +81,7 @@ export default function OrderList({ orders, onSelect }: OrderListProps) {
               <Button
                 type="button"
                 variant="secondary"
+                className="rounded-full border-black bg-black px-5 text-white transition hover:-translate-y-0.5 hover:bg-black/80"
                 onClick={(event) => {
                   event.stopPropagation()
                   onSelect(order.tracking_id)

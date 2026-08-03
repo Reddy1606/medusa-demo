@@ -1,157 +1,127 @@
-import { listCategories } from "@lib/data/categories";
-import { listCollections } from "@lib/data/collections";
-import { Text, clx } from "@modules/common/components/ui";
-
-import LocalizedClientLink from "@modules/common/components/localized-client-link";
-import MedusaCTA from "@modules/layout/components/medusa-cta";
+import { listCategories } from "@lib/data/categories"
+import { listCollections } from "@lib/data/collections"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import BrandLogo from "@modules/layout/components/brand-logo"
 
 export default async function Footer() {
-  const { collections } = await listCollections({
-    fields: "*products",
-  });
-  const productCategories = await listCategories();
+  const [{ collections }, categories] = await Promise.all([
+    listCollections({ fields: "id,title,handle" }),
+    listCategories(),
+  ])
 
   return (
-    <footer className="border-t border-ui-border-base w-full">
-      <div className="content-container flex flex-col w-full">
-        <div className="flex flex-col gap-y-6 xsmall:flex-row items-start justify-between py-40">
-          <div>
+    <footer className="bg-[#111111] px-6 text-white">
+      <div className="mx-auto max-w-[1280px] py-16 small:py-20">
+        <div className="grid gap-12 border-b border-white/15 pb-14 xsmall:grid-cols-2 small:grid-cols-4">
+          <div className="xsmall:col-span-2">
             <LocalizedClientLink
               href="/"
-              className="txt-compact-xlarge-plus text-ui-fg-subtle hover:text-ui-fg-base uppercase"
+              className="text-2xl font-bold tracking-[0.14em] text-[#f4bf28]"
             >
-              Medusa Store
+              <BrandLogo footer />
             </LocalizedClientLink>
+            <p className="mt-5 max-w-sm text-sm leading-6 text-white/55">
+              Giúp việc mua sắm quốc tế và theo dõi vận chuyển về Việt Nam trở
+              nên rõ ràng, thuận tiện hơn.
+            </p>
           </div>
-          <div className="text-small-regular gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-3">
-            {productCategories && productCategories?.length > 0 && (
-              <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus txt-ui-fg-base">
-                  Categories
-                </span>
-                <ul
-                  className="grid grid-cols-1 gap-2"
-                  data-testid="footer-categories"
+          <div>
+            <h2 className="text-sm font-semibold text-white">Khám phá</h2>
+            <ul className="mt-5 space-y-3 text-sm text-white/55">
+              <li>
+                <LocalizedClientLink
+                  className="transition hover:text-[#f4bf28]"
+                  href="/store"
                 >
-                  {productCategories?.slice(0, 6).map((c) => {
-                    if (c.parent_category) {
-                      return;
-                    }
-
-                    const children =
-                      c.category_children?.map((child) => ({
-                        name: child.name,
-                        handle: child.handle,
-                        id: child.id,
-                      })) || null;
-
-                    return (
-                      <li
-                        className="flex flex-col gap-2 text-ui-fg-subtle txt-small"
-                        key={c.id}
-                      >
-                        <LocalizedClientLink
-                          className={clx(
-                            "hover:text-ui-fg-base",
-                            children && "txt-small-plus"
-                          )}
-                          href={`/categories/${c.handle}`}
-                          data-testid="category-link"
-                        >
-                          {c.name}
-                        </LocalizedClientLink>
-                        {children && (
-                          <ul className="grid grid-cols-1 ml-3 gap-2">
-                            {children &&
-                              children.map((child) => (
-                                <li key={child.id}>
-                                  <LocalizedClientLink
-                                    className="hover:text-ui-fg-base"
-                                    href={`/categories/${child.handle}`}
-                                    data-testid="category-link"
-                                  >
-                                    {child.name}
-                                  </LocalizedClientLink>
-                                </li>
-                              ))}
-                          </ul>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            )}
-            {collections && collections.length > 0 && (
-              <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus txt-ui-fg-base">
-                  Collections
-                </span>
-                <ul
-                  className={clx(
-                    "grid grid-cols-1 gap-2 text-ui-fg-subtle txt-small",
-                    {
-                      "grid-cols-2": (collections?.length || 0) > 3,
-                    }
-                  )}
+                  Tất cả sản phẩm
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink
+                  className="transition hover:text-[#f4bf28]"
+                  href="/#dich-vu"
                 >
-                  {collections?.slice(0, 6).map((c) => (
-                    <li key={c.id}>
-                      <LocalizedClientLink
-                        className="hover:text-ui-fg-base"
-                        href={`/collections/${c.handle}`}
-                      >
-                        {c.title}
-                      </LocalizedClientLink>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            <div className="flex flex-col gap-y-2">
-              <span className="txt-small-plus txt-ui-fg-base">Medusa</span>
-              <ul className="grid grid-cols-1 gap-y-2 text-ui-fg-subtle txt-small">
-                <li>
-                  <a
-                    href="https://github.com/medusajs"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                  >
-                    GitHub
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://docs.medusajs.com"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                  >
-                    Documentation
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/medusajs/dtc-starter"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                  >
-                    Source code
-                  </a>
-                </li>
-              </ul>
-            </div>
+                  Dịch vụ
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink
+                  className="transition hover:text-[#f4bf28]"
+                  href="/#huong-dan"
+                >
+                  Hướng dẫn đặt hàng
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink
+                  className="transition hover:text-[#f4bf28]"
+                  href="/order-tracking"
+                >
+                  Tra cứu đơn hàng
+                </LocalizedClientLink>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h2 className="text-sm font-semibold text-white">Tài khoản</h2>
+            <ul className="mt-5 space-y-3 text-sm text-white/55">
+              <li>
+                <LocalizedClientLink
+                  className="transition hover:text-[#f4bf28]"
+                  href="/account"
+                >
+                  Đăng nhập / Đăng ký
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink
+                  className="transition hover:text-[#f4bf28]"
+                  href="/account/orders"
+                >
+                  Đơn hàng của tôi
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink
+                  className="transition hover:text-[#f4bf28]"
+                  href="/cart"
+                >
+                  Giỏ hàng
+                </LocalizedClientLink>
+              </li>
+            </ul>
           </div>
         </div>
-        <div className="flex w-full mb-16 justify-between text-ui-fg-muted">
-          <Text className="txt-compact-small">
-            © {new Date().getFullYear()} Medusa Store. All rights reserved.
-          </Text>
-          <MedusaCTA />
+        {(categories.length > 0 || collections.length > 0) && (
+          <div className="flex flex-wrap gap-x-6 gap-y-3 border-b border-white/15 py-6 text-xs text-white/45">
+            {categories
+              .slice(0, 4)
+              .filter((item) => !item.parent_category)
+              .map((item) => (
+                <LocalizedClientLink
+                  key={item.id}
+                  href={`/categories/${item.handle}`}
+                  className="transition hover:text-white"
+                >
+                  {item.name}
+                </LocalizedClientLink>
+              ))}
+            {collections.slice(0, 4).map((item) => (
+              <LocalizedClientLink
+                key={item.id}
+                href={`/collections/${item.handle}`}
+                className="transition hover:text-white"
+              >
+                {item.title}
+              </LocalizedClientLink>
+            ))}
+          </div>
+        )}
+        <div className="flex flex-col gap-2 pt-7 text-xs text-white/40 xsmall:flex-row xsmall:items-center xsmall:justify-between">
+          <span>© {new Date().getFullYear()} TIXIMAX</span>
+          <span>Mua sắm quốc tế · Thanh toán VietQR · Theo dõi minh bạch</span>
         </div>
       </div>
     </footer>
-  );
+  )
 }

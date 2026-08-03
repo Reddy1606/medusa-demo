@@ -17,12 +17,17 @@ export default function OrderDetail({ order, onBack }: OrderDetailProps) {
   return (
     <section className="flex flex-col gap-8">
       <div>
-        <Button type="button" variant="secondary" onClick={onBack}>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onBack}
+          className="rounded-full border-black/15 bg-white px-5 hover:border-black"
+        >
           Quay lại danh sách
         </Button>
       </div>
 
-      <div className="rounded-lg border border-ui-border-base bg-white p-6 small:p-8">
+      <div className="tixi-card p-6 small:p-8">
         <div className="flex flex-col gap-4 small:flex-row small:justify-between">
           <div>
             <Heading level="h2">Mã đơn #{order.display_id}</Heading>
@@ -64,7 +69,7 @@ export default function OrderDetail({ order, onBack }: OrderDetailProps) {
 
       <section>
         <Heading level="h2">Danh sách sản phẩm</Heading>
-        <div className="mt-4 divide-y divide-ui-border-base rounded-lg border border-ui-border-base bg-white">
+        <div className="tixi-card mt-4 divide-y divide-ui-border-base overflow-hidden">
           {order.items.map((item, index) => (
             <div
               key={`${item.title}-${item.variant_title ?? "default"}-${index}`}
@@ -101,7 +106,7 @@ export default function OrderDetail({ order, onBack }: OrderDetailProps) {
       {order.tracking.length > 0 && (
         <section>
           <Heading level="h2">Thông tin vận chuyển</Heading>
-          <div className="mt-4 space-y-3 rounded-lg border border-ui-border-base bg-white p-6">
+          <div className="tixi-card mt-4 space-y-3 p-6">
             {order.tracking.map((tracking, index) => (
               <div key={`${tracking.number ?? "tracking"}-${index}`}>
                 <Text>

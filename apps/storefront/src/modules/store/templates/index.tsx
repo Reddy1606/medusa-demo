@@ -22,25 +22,38 @@ const StoreTemplate = ({
   const sort = sortBy || "created_at"
 
   return (
-    <div
-      className="flex flex-col small:flex-row small:items-start py-6 content-container"
-      data-testid="category-container"
-    >
-      <RefinementList sortBy={sort} />
-      <div className="w-full">
-        <div className="mb-8 text-2xl-semi">
-          <h1 data-testid="store-page-title">All products</h1>
+    <main className="tixi-page px-6 py-12 small:py-16">
+      <div className="mx-auto max-w-[1280px]" data-testid="category-container">
+        <div className="mb-10 max-w-2xl">
+          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#a87200]">
+            Cửa hàng TIXIMAX
+          </span>
+          <h1
+            className="mt-3 text-4xl font-semibold tracking-[-0.03em] small:text-5xl"
+            data-testid="store-page-title"
+          >
+            Tất cả sản phẩm
+          </h1>
+          <p className="mt-4 leading-7 text-black/55">
+            Khám phá sản phẩm quốc tế với giá theo khu vực được hiển thị rõ
+            ràng.
+          </p>
         </div>
-        <Suspense fallback={<SkeletonProductGrid />}>
-          <PaginatedProducts
-            sortBy={sort}
-            page={pageNumber}
-            countryCode={countryCode}
-            optionValueIds={optionValueIds}
-          />
-        </Suspense>
+        <div className="flex flex-col gap-8 small:flex-row small:items-start">
+          <RefinementList sortBy={sort} />
+          <div className="min-w-0 w-full">
+            <Suspense fallback={<SkeletonProductGrid />}>
+              <PaginatedProducts
+                sortBy={sort}
+                page={pageNumber}
+                countryCode={countryCode}
+                optionValueIds={optionValueIds}
+              />
+            </Suspense>
+          </div>
+        </div>
       </div>
-    </div>
+    </main>
   )
 }
 
