@@ -3,12 +3,17 @@ import { Metadata } from "next"
 import FeaturedProducts from "@modules/home/components/featured-products"
 import Hero from "@modules/home/components/hero"
 import { listCollections } from "@lib/data/collections"
+import {
+  FinalCta,
+  ProcessSection,
+  ServicesSection,
+} from "@modules/home/components/homepage-sections"
 import { getRegion } from "@lib/data/regions"
 
 export const metadata: Metadata = {
-  title: "Medusa Next.js Starter Template",
+  title: "TIXIMAX | Mua sắm quốc tế dễ dàng hơn",
   description:
-    "A performant frontend ecommerce starter template with Next.js 15 and Medusa.",
+    "Mua sắm hàng quốc tế, thanh toán VietQR và theo dõi giao hàng về Việt Nam minh bạch cùng TIXIMAX.",
 }
 
 export default async function Home(props: {
@@ -31,11 +36,12 @@ export default async function Home(props: {
   return (
     <>
       <Hero />
-      <div className="py-12">
-        <ul className="flex flex-col gap-x-6">
-          <FeaturedProducts collections={collections} region={region} />
-        </ul>
-      </div>
+      <ServicesSection />
+      <ul className="flex flex-col bg-[#f5c745]">
+        <FeaturedProducts collections={collections} region={region} />
+      </ul>
+      <ProcessSection />
+      <FinalCta />
     </>
   )
 }

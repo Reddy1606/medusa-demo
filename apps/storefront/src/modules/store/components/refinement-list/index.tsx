@@ -64,7 +64,7 @@ const RefinementList = ({
     })
 
   return (
-    <div className="flex flex-col gap-12 py-4 mb-8 small:px-0 pl-6 small:min-w-[250px] small:ml-[1.675rem]">
+    <aside className="tixi-card flex w-full flex-col gap-8 p-5 small:sticky small:top-28 small:w-[240px] small:min-w-[240px]">
       <SortProducts
         sortBy={sortBy}
         setQueryParams={setQueryParams}
@@ -76,7 +76,7 @@ const RefinementList = ({
           setOptionValueIds={setOptionValueIds}
         />
       )}
-    </div>
+    </aside>
   )
 }
 

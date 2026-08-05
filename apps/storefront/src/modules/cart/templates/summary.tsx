@@ -31,11 +31,11 @@ const Summary = ({ cart }: SummaryProps) => {
     <div className="flex flex-col gap-y-5">
       <div>
         <Heading level="h2" className="text-2xl font-semibold leading-tight">
-          Order Summary
+          Tóm tắt đơn hàng
         </Heading>
 
         <p className="mt-1 text-sm text-ui-fg-subtle">
-          Check the information before making the payment
+          Kiểm tra thông tin trước khi tiếp tục thanh toán
         </p>
       </div>
 
@@ -54,13 +54,14 @@ const Summary = ({ cart }: SummaryProps) => {
         data-testid="checkout-button"
         className="block"
       >
-        <Button className="h-12 w-full text-base font-semibold">
-          Proceed with payment
+        <Button className="tixi-primary-button w-full text-base">
+          Tiến hành thanh toán
         </Button>
       </LocalizedClientLink>
 
       <p className="text-center text-xs text-ui-fg-subtle">
-        You will be redirected to enter your address and payment details when you proceed to checkout.
+        You will be redirected to enter your address and payment details when
+        you proceed to checkout.
       </p>
     </div>
   )

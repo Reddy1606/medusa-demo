@@ -13,7 +13,7 @@ const CartTemplate = ({
   customer: HttpTypes.StoreCustomer | null
 }) => {
   return (
-    <div className="min-h-screen bg-gray-100 py-10">
+    <main className="tixi-page py-10 small:py-16">
       <div
         className="content-container mx-auto max-w-7xl"
         data-testid="cart-container"
@@ -21,7 +21,7 @@ const CartTemplate = ({
         {cart?.items?.length ? (
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             {/* Danh sách sản phẩm */}
-            <div className="rounded-xl border bg-white p-6 shadow-sm lg:col-span-2">
+            <div className="tixi-card p-4 xsmall:p-6 lg:col-span-2">
               {!customer && (
                 <>
                   <SignInPrompt />
@@ -33,17 +33,17 @@ const CartTemplate = ({
             </div>
 
             {/* Tóm tắt đơn hàng */}
-            <div className="h-fit rounded-xl border bg-white p-6 shadow-sm lg:sticky lg:top-6">
+            <div className="tixi-card h-fit p-6 lg:sticky lg:top-28">
               {cart.region && <Summary cart={cart} />}
             </div>
           </div>
         ) : (
-          <div className="rounded-xl border bg-white p-10 shadow-sm">
+          <div className="tixi-card p-8 small:p-12">
             <EmptyCartMessage />
           </div>
         )}
       </div>
-    </div>
+    </main>
   )
 }
 

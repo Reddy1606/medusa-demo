@@ -20,11 +20,23 @@ export default async function Checkout() {
   const customer = await retrieveCustomer()
 
   return (
-    <div className="grid grid-cols-1 small:grid-cols-[1fr_416px] content-container gap-x-40 py-12">
-      <PaymentWrapper cart={cart}>
-        <CheckoutForm cart={cart} customer={customer} />
-      </PaymentWrapper>
-      <CheckoutSummary cart={cart} />
+    <div className="content-container py-10 small:py-14">
+      <div className="mb-10">
+        <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#a87200]">
+          Thanh toán an toàn
+        </span>
+        <h1 className="mt-3 text-4xl font-semibold tracking-[-0.03em]">
+          Hoàn tất đơn hàng
+        </h1>
+      </div>
+      <div className="grid grid-cols-1 gap-8 small:grid-cols-[minmax(0,1fr)_380px] medium:gap-12">
+        <div className="tixi-checkout-section">
+          <PaymentWrapper cart={cart}>
+            <CheckoutForm cart={cart} customer={customer} />
+          </PaymentWrapper>
+        </div>
+        <CheckoutSummary cart={cart} />
+      </div>
     </div>
   )
 }
