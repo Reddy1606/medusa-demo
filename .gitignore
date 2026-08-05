@@ -55,3 +55,6 @@ yarn-error.log*
 ehthumbs.db
 Thumbs.db
 **/.DS_Store
+# Ignore uploaded runtime files
+apps/backend/static/*
+!apps/backend/static/.gitkeep
