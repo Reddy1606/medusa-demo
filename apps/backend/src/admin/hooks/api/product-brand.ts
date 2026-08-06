@@ -13,6 +13,10 @@ export const productBrandQueryKeys = {
     [...productBrandQueryKeys.all, productId] as const,
 };
 
+export const brandProductsQueryKeys = {
+  all: ["brand-products"] as const,
+};
+
 export const useProductBrand = (productId: string) =>
   useQuery({
     queryKey: productBrandQueryKeys.detail(productId),
@@ -50,6 +54,9 @@ export const useSetProductBrand = (productId: string) => {
       await queryClient.invalidateQueries({
         queryKey: productBrandQueryKeys.detail(productId),
         exact: true,
+      });
+      await queryClient.invalidateQueries({
+        queryKey: brandProductsQueryKeys.all,
       });
     },
   });

@@ -73,3 +73,28 @@ export type AdminSetProductBrandRequest = {
 export type AdminSetProductBrandResponse = AdminProductBrandResponse & {
   product_id: string;
 };
+
+export type AdminBrandProduct = {
+  id: string;
+  title: string;
+  subtitle: string | null;
+  handle: string;
+  thumbnail: string | null;
+  updated_at: string;
+  brand: AdminBrand | null;
+};
+
+export type AdminBrandProductListParams = {
+  q?: string;
+  brand_id?: string;
+  assignment?: "assigned" | "unassigned";
+  limit?: number;
+  offset?: number;
+};
+
+export type AdminBrandProductListResponse = {
+  products: AdminBrandProduct[];
+  count: number;
+  limit: number;
+  offset: number;
+};

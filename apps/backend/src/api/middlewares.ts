@@ -13,6 +13,7 @@ import {
   AdminGetBrandsParams,
   AdminUpdateBrand,
 } from "./admin/brands/validators";
+import { AdminGetBrandProductsParams } from "./admin/brand-products/validators";
 import { AdminSetProductBrand } from "./admin/products/[id]/brand/validators";
 
 import { GuestOrderTrackingSchema } from "./store/guest-order-tracking/validators";
@@ -36,6 +37,27 @@ export default defineMiddlewares({
       matcher: "/store/guest-order-tracking",
       method: "POST",
       middlewares: [validateAndTransformBody(GuestOrderTrackingSchema)],
+    },
+    {
+      matcher: "/admin/brand-products",
+      middlewares: [authenticate("user", ["session", "bearer", "api-key"])],
+    },
+    {
+      matcher: "/admin/brand-products",
+      method: "GET",
+      middlewares: [
+        validateAndTransformQuery(AdminGetBrandProductsParams, {
+          defaults: [
+            "id",
+            "title",
+            "subtitle",
+            "handle",
+            "thumbnail",
+            "updated_at",
+          ],
+          isList: true,
+        }),
+      ],
     },
     {
       matcher: "/admin/brands*",
