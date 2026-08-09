@@ -29,6 +29,7 @@ export default async function BrandDetailTemplate({
       <div className="relative h-56 overflow-hidden small:h-80">
         <BrandImage
           src={brand.banner_url}
+          name={brand.name}
           alt={`Ảnh bìa ${brand.name}`}
           kind="banner"
         />
@@ -37,7 +38,11 @@ export default async function BrandDetailTemplate({
       <div className="mx-auto max-w-[1280px] px-6">
         <section className="relative -mt-16 rounded-3xl bg-white p-6 shadow-[0_16px_50px_rgba(17,17,17,0.12)] small:flex small:items-center small:gap-8 small:p-10">
           <div className="h-28 w-28 shrink-0 overflow-hidden rounded-2xl border border-black/10 bg-white p-3 shadow-sm">
-            <BrandImage src={brand.logo_url} alt={`Logo ${brand.name}`} />
+            <BrandImage
+              src={brand.logo_url}
+              name={brand.name}
+              alt={`Logo ${brand.name}`}
+            />
           </div>
           <div className="mt-6 small:mt-0">
             <h1 className="text-4xl font-semibold tracking-[-0.04em] text-black small:text-5xl">

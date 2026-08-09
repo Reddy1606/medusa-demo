@@ -33,7 +33,11 @@ export default async function FeaturedBrands() {
               className="group flex flex-col items-center gap-3 text-center"
             >
               <div className="h-24 w-full overflow-hidden rounded-2xl border border-black/10 bg-[#fff8df] p-3 transition group-hover:border-[#d7a921] group-hover:shadow-md">
-                <BrandImage src={brand.logo_url} alt={`Logo ${brand.name}`} />
+                <BrandImage
+                  src={brand.logo_url}
+                  name={brand.name}
+                  alt={`Logo ${brand.name}`}
+                />
               </div>
               <span className="text-sm font-semibold text-black group-hover:text-[#9a6800]">
                 {brand.name}

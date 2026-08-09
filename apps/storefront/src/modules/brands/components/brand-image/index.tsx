@@ -1,18 +1,24 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 export default function BrandImage({
   src,
+  name,
   alt,
   kind = "logo",
 }: {
   src: string | null
+  name: string
   alt: string
   kind?: "logo" | "banner"
 }) {
   const [failed, setFailed] = useState(false)
   const isBanner = kind === "banner"
+
+  useEffect(() => {
+    setFailed(false)
+  }, [src])
 
   if (!src || failed) {
     return (
@@ -25,7 +31,7 @@ export default function BrandImage({
             : "flex h-full w-full items-center justify-center bg-[#fff4c9] text-xl font-bold text-[#9a6800]"
         }
       >
-        {!isBanner && alt.slice(0, 1).toUpperCase()}
+        {!isBanner && name.trim().slice(0, 1).toUpperCase()}
       </div>
     )
   }

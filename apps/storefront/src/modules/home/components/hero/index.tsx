@@ -8,9 +8,9 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 
 const Hero = () => {
   return (
-    <section className="bg-[#fbf6e9] px-4 pb-8 pt-4 small:px-6 small:pb-12 small:pt-6">
-      <div className="relative mx-auto grid min-h-[calc(100vh-112px)] max-w-[1280px] overflow-hidden rounded-[32px] bg-gradient-to-br from-[#fff8dc] via-[#f9d866] to-[#eeb52d] px-6 py-12 shadow-[0_24px_70px_rgba(69,48,0,0.14)] small:grid-cols-2 small:items-center small:px-14 small:py-16">
-        <div className="relative z-10 max-w-2xl">
+    <section className="w-full overflow-hidden bg-gradient-to-br from-[#fff8dc] via-[#f9d866] to-[#eeb52d]">
+      <div className="relative mx-auto grid max-w-[1280px] grid-cols-[minmax(0,1fr)] items-center px-6 py-12 small:min-h-[calc(100vh-80px)] small:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] small:gap-8 small:px-10 small:py-16 medium:px-14">
+        <div className="relative z-10 min-w-0 max-w-2xl">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/75 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-black shadow-sm backdrop-blur">
             <GlobeEurope className="h-4 w-4" /> Kết nối hàng hóa toàn cầu
           </div>
@@ -43,13 +43,13 @@ const Hero = () => {
                 <span className="flex items-center gap-2" key={item}>
                   <CheckCircleSolid className="h-4 w-4 text-black" /> {item}
                 </span>
-              )
+              ),
             )}
           </div>
         </div>
 
         <div
-          className="relative mt-12 min-h-[360px] small:mt-0 small:min-h-[540px]"
+          className="relative mt-12 min-h-[360px] min-w-0 small:mt-0 small:min-h-[540px]"
           aria-hidden="true"
         >
           <div className="absolute left-[10%] top-[8%] h-[78%] w-[78%] rounded-full border border-white/50 bg-white/20 shadow-inner" />

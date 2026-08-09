@@ -8,6 +8,8 @@ import type {
 } from "@lib/types/brand"
 import { getAuthHeaders, getCacheOptions } from "./cookies"
 
+const BRAND_LIST_REVALIDATE_SECONDS = 60
+
 const safeRequest = async <T>(request: () => Promise<T>, fallback?: T) => {
   try {
     return await request()
@@ -31,7 +33,7 @@ export const listBrands = async ({
     sdk.client.fetch<StoreBrandListResponse>("/store/brands", {
       method: "GET",
       query: { q, limit, offset, order: "name" },
-      next,
+      next: { ...next, revalidate: BRAND_LIST_REVALIDATE_SECONDS },
       cache: "force-cache",
     }),
   )
