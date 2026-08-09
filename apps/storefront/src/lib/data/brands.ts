@@ -9,6 +9,7 @@ import type {
 import { getAuthHeaders, getCacheOptions } from "./cookies"
 
 const BRAND_LIST_REVALIDATE_SECONDS = 60
+const BRAND_PRODUCTS_REVALIDATE_SECONDS = 60
 
 const safeRequest = async <T>(request: () => Promise<T>, fallback?: T) => {
   try {
@@ -84,7 +85,7 @@ export const listBrandProducts = async ({
             "*variants.calculated_price,+variants.inventory_quantity,*variants.images,*variants.options,+metadata,+tags,",
         },
         headers,
-        next,
+        next: { ...next, revalidate: BRAND_PRODUCTS_REVALIDATE_SECONDS },
         cache: "force-cache",
       },
     ),
