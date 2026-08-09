@@ -31,6 +31,14 @@ export default async function Footer() {
               <li>
                 <LocalizedClientLink
                   className="transition hover:text-[#f4bf28]"
+                  href="/brands"
+                >
+                  Thương hiệu
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink
+                  className="transition hover:text-[#f4bf28]"
                   href="/store"
                 >
                   Tất cả sản phẩm

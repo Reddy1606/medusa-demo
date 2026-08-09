@@ -14,6 +14,7 @@ import LanguageSelect from "../language-select"
 const items = [
   ["Trang chủ", "/"],
   ["Sản phẩm", "/store"],
+  ["Thương hiệu", "/brands"],
   ["Dịch vụ", "/#dich-vu"],
   ["Hướng dẫn", "/#huong-dan"],
   ["Tra cứu đơn hàng", "/order-tracking"],
@@ -102,7 +103,7 @@ export default function SideMenu({ regions, locales, currentLocale }: Props) {
                     <ArrowRightMini
                       className={clx(
                         "transition-transform",
-                        languageToggleState.state && "-rotate-90"
+                        languageToggleState.state && "-rotate-90",
                       )}
                     />
                   </div>
@@ -121,7 +122,7 @@ export default function SideMenu({ regions, locales, currentLocale }: Props) {
                   <ArrowRightMini
                     className={clx(
                       "transition-transform",
-                      countryToggleState.state && "-rotate-90"
+                      countryToggleState.state && "-rotate-90",
                     )}
                   />
                 </div>

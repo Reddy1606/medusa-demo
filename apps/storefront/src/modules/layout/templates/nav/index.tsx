@@ -51,6 +51,12 @@ export default async function Nav() {
             </LocalizedClientLink>
             <LocalizedClientLink
               className="font-medium transition hover:text-black"
+              href="/brands"
+            >
+              Thương hiệu
+            </LocalizedClientLink>
+            <LocalizedClientLink
+              className="font-medium transition hover:text-black"
               href="/#dich-vu"
             >
               Dịch vụ
