@@ -76,7 +76,7 @@ export const listProducts = async ({
         headers,
         next,
         cache: "force-cache",
-      }
+      },
     )
     .then(({ products, count }) => {
       const nextPage = count > offset + limit ? pageParam + 1 : null
@@ -102,12 +102,14 @@ export const listProductsWithSort = async ({
   sortBy = "created_at",
   countryCode,
   optionValueIds,
+  origin,
 }: {
   page?: number
   queryParams?: ProductListQueryParams
   sortBy?: SortOptions
   countryCode: string
   optionValueIds?: OptionValueIds
+  origin?: string
 }): Promise<{
   response: { products: HttpTypes.StoreProduct[]; count: number }
   nextPage: number | null
@@ -115,7 +117,7 @@ export const listProductsWithSort = async ({
 }> => {
   const limit = queryParams?.limit || 12
   const optionFilters = Array.from(
-    new Set((optionValueIds || []).filter(Boolean))
+    new Set((optionValueIds || []).filter(Boolean)),
   )
 
   const {
@@ -130,11 +132,16 @@ export const listProductsWithSort = async ({
     countryCode,
   })
 
-  const sortedProducts = sortProducts(products, sortBy)
+  const matchingProducts = origin
+    ? products.filter(
+        (product) => product.origin_country?.toLowerCase() === origin,
+      )
+    : products
+  const sortedProducts = sortProducts(matchingProducts, sortBy)
 
   const pageParam = (page - 1) * limit
 
-  const filteredCount = products.length
+  const filteredCount = matchingProducts.length
 
   const nextPage = filteredCount > pageParam + limit ? pageParam + limit : null
 

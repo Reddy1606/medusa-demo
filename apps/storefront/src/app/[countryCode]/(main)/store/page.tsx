@@ -3,6 +3,7 @@ import { Metadata } from "next"
 import { parseOptionValueIds } from "@lib/util/product-option-filters"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import StoreTemplate from "@modules/store/templates"
+import { normalizeProductOrigin } from "@lib/config/product-origins"
 
 export const metadata: Metadata = {
   title: "Store",
@@ -14,6 +15,7 @@ type StorePageSearchParams = Record<string, string | string[] | undefined> & {
   page?: string
   optionValueIds?: string | string[]
   brand?: string
+  origin?: string
 }
 
 type Params = {
@@ -27,6 +29,7 @@ export default async function StorePage(props: Params) {
   const params = await props.params
   const searchParams = await props.searchParams
   const { sortBy, page, brand } = searchParams
+  const origin = normalizeProductOrigin(searchParams.origin)
   const optionValueIds = parseOptionValueIds(searchParams)
 
   return (
@@ -36,6 +39,7 @@ export default async function StorePage(props: Params) {
       countryCode={params.countryCode}
       optionValueIds={optionValueIds}
       brand={brand}
+      origin={origin}
     />
   )
 }

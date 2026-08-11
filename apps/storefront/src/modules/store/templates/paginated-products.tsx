@@ -27,6 +27,7 @@ export default async function PaginatedProducts({
   countryCode,
   optionValueIds,
   brand,
+  origin,
 }: {
   sortBy?: SortOptions
   page: number
@@ -36,6 +37,7 @@ export default async function PaginatedProducts({
   countryCode: string
   optionValueIds?: OptionValueIds
   brand?: string
+  origin?: string
 }) {
   const queryParams: PaginatedProductsParams = {
     limit: 12,
@@ -73,8 +75,13 @@ export default async function PaginatedProducts({
       limit: 100,
       optionValueIds,
     })
-    const sorted = sortProducts(response.products, sortBy || "created_at")
-    count = response.count
+    const matchingProducts = origin
+      ? response.products.filter(
+          (product) => product.origin_country?.toLowerCase() === origin,
+        )
+      : response.products
+    const sorted = sortProducts(matchingProducts, sortBy || "created_at")
+    count = matchingProducts.length
     products = sorted.slice((page - 1) * PRODUCT_LIMIT, page * PRODUCT_LIMIT)
   } else {
     const result = await listProductsWithSort({
@@ -83,6 +90,7 @@ export default async function PaginatedProducts({
       sortBy,
       countryCode,
       optionValueIds,
+      origin,
     })
     products = result.response.products
     count = result.response.count

@@ -14,19 +14,21 @@ const StoreTemplate = ({
   countryCode,
   optionValueIds,
   brand,
+  origin,
 }: {
   sortBy?: SortOptions
   page?: string
   countryCode: string
   optionValueIds?: OptionValueIds
   brand?: string
+  origin?: string
 }) => {
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
 
   return (
     <StoreContent
-      {...{ sort, pageNumber, countryCode, optionValueIds, brand }}
+      {...{ sort, pageNumber, countryCode, optionValueIds, brand, origin }}
     />
   )
 }
@@ -37,12 +39,14 @@ const StoreContent = async ({
   countryCode,
   optionValueIds,
   brand,
+  origin,
 }: {
   sort: SortOptions
   pageNumber: number
   countryCode: string
   optionValueIds?: OptionValueIds
   brand?: string
+  origin?: string
 }) => {
   const { brands } = await listBrands({ limit: 100 })
 
@@ -65,7 +69,12 @@ const StoreContent = async ({
           </p>
         </div>
         <div className="flex flex-col gap-8 small:flex-row small:items-start">
-          <RefinementList sortBy={sort} brands={brands} selectedBrand={brand} />
+          <RefinementList
+            sortBy={sort}
+            brands={brands}
+            selectedBrand={brand}
+            selectedOrigin={origin}
+          />
           <div className="min-w-0 w-full">
             <Suspense fallback={<SkeletonProductGrid />}>
               <PaginatedProducts
@@ -74,6 +83,7 @@ const StoreContent = async ({
                 countryCode={countryCode}
                 optionValueIds={optionValueIds}
                 brand={brand}
+                origin={origin}
               />
             </Suspense>
           </div>

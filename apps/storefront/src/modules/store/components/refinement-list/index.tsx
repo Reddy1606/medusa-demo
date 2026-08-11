@@ -11,6 +11,7 @@ import OptionsPicker from "./options-picker"
 import SortProducts, { SortOptions } from "./sort-products"
 import type { StoreBrand } from "@lib/types/brand"
 import BrandPicker from "./brand-picker"
+import OriginPicker from "./origin-picker"
 
 type RefinementListProps = {
   sortBy: SortOptions
@@ -19,6 +20,7 @@ type RefinementListProps = {
   "data-testid"?: string
   brands?: StoreBrand[]
   selectedBrand?: string
+  selectedOrigin?: string
 }
 
 const RefinementList = ({
@@ -27,6 +29,7 @@ const RefinementList = ({
   "data-testid": dataTestId,
   brands = [],
   selectedBrand,
+  selectedOrigin,
 }: RefinementListProps) => {
   const router = useRouter()
   const pathname = usePathname()
@@ -75,6 +78,12 @@ const RefinementList = ({
       else params.delete("brand")
     })
 
+  const setOrigin = (origin?: string) =>
+    updateQueryParams((params) => {
+      if (origin) params.set("origin", origin)
+      else params.delete("origin")
+    })
+
   return (
     <aside className="tixi-card flex w-full flex-col gap-8 p-5 small:sticky small:top-28 small:w-[240px] small:min-w-[240px]">
       <SortProducts
@@ -82,6 +91,7 @@ const RefinementList = ({
         setQueryParams={setQueryParams}
         data-testid={dataTestId}
       />
+      <OriginPicker selectedOrigin={selectedOrigin} setOrigin={setOrigin} />
       {!!brands.length && (
         <BrandPicker
           brands={brands}
