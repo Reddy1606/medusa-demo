@@ -4,6 +4,9 @@ import { OptionValueIds } from "@lib/util/product-option-filters"
 import ProductPreview from "@modules/products/components/product-preview"
 import { Pagination } from "@modules/store/components/pagination"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
+import { listBrandProducts } from "@lib/data/brands"
+import { sortProducts } from "@lib/util/sort-products"
+import { HttpTypes } from "@medusajs/types"
 
 const PRODUCT_LIMIT = 12
 
@@ -23,6 +26,7 @@ export default async function PaginatedProducts({
   productsIds,
   countryCode,
   optionValueIds,
+  brand,
 }: {
   sortBy?: SortOptions
   page: number
@@ -31,6 +35,7 @@ export default async function PaginatedProducts({
   productsIds?: string[]
   countryCode: string
   optionValueIds?: OptionValueIds
+  brand?: string
 }) {
   const queryParams: PaginatedProductsParams = {
     limit: 12,
@@ -58,15 +63,30 @@ export default async function PaginatedProducts({
     return null
   }
 
-  const {
-    response: { products, count },
-  } = await listProductsWithSort({
-    page,
-    queryParams,
-    sortBy,
-    countryCode,
-    optionValueIds,
-  })
+  let products: HttpTypes.StoreProduct[]
+  let count: number
+
+  if (brand) {
+    const response = await listBrandProducts({
+      handle: brand,
+      regionId: region.id,
+      limit: 100,
+      optionValueIds,
+    })
+    const sorted = sortProducts(response.products, sortBy || "created_at")
+    count = response.count
+    products = sorted.slice((page - 1) * PRODUCT_LIMIT, page * PRODUCT_LIMIT)
+  } else {
+    const result = await listProductsWithSort({
+      page,
+      queryParams,
+      sortBy,
+      countryCode,
+      optionValueIds,
+    })
+    products = result.response.products
+    count = result.response.count
+  }
 
   const totalPages = Math.ceil(count / PRODUCT_LIMIT)
 

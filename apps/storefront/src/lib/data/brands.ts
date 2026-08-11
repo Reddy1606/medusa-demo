@@ -56,16 +56,37 @@ export const retrieveBrandByHandle = async (
   return response.brand
 }
 
+export const retrieveProductBrand = async (
+  productId: string,
+): Promise<StoreBrand | null> => {
+  const next = await getCacheOptions(`product-brand-${productId}`)
+  const response = await safeRequest(
+    () =>
+      sdk.client.fetch<{ brand: StoreBrand | null }>(
+        `/store/products/${productId}/brand`,
+        {
+          method: "GET",
+          next: { ...next, revalidate: BRAND_PRODUCTS_REVALIDATE_SECONDS },
+          cache: "force-cache",
+        },
+      ),
+    { brand: null },
+  )
+  return response.brand
+}
+
 export const listBrandProducts = async ({
   handle,
   regionId,
   page = 1,
   limit = 12,
+  optionValueIds,
 }: {
   handle: string
   regionId: string
   page?: number
   limit?: number
+  optionValueIds?: string[]
 }) => {
   const offset = (Math.max(page, 1) - 1) * limit
   const headers = await getAuthHeaders()
@@ -83,6 +104,9 @@ export const listBrandProducts = async ({
           order: "-created_at",
           fields:
             "*variants.calculated_price,+variants.inventory_quantity,*variants.images,*variants.options,+metadata,+tags,",
+          ...(optionValueIds?.length
+            ? { option_value_id: optionValueIds }
+            : {}),
         },
         headers,
         next: { ...next, revalidate: BRAND_PRODUCTS_REVALIDATE_SECONDS },

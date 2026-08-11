@@ -52,3 +52,26 @@ export const listLinkedProductIds = async (
     if (data.length < take) return productIds;
   }
 };
+
+export const findActiveBrandForProduct = async (
+  req: MedusaRequest,
+  productId: string,
+) => {
+  const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
+  const { data } = await query.graph({
+    entity: productBrandLink.entryPoint,
+    fields: ["brand_id"],
+    filters: { product_id: productId },
+    pagination: { take: 1 },
+  });
+  const brandId = (data[0] as { brand_id?: string } | undefined)?.brand_id;
+
+  if (!brandId) return undefined;
+
+  const brandService: BrandModuleService = req.scope.resolve(BRAND_MODULE);
+  const brands = await brandService.listBrands(
+    { id: brandId, is_active: true },
+    { take: 1 },
+  );
+  return brands[0];
+};

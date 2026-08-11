@@ -9,18 +9,24 @@ import {
 } from "@lib/util/product-option-filters"
 import OptionsPicker from "./options-picker"
 import SortProducts, { SortOptions } from "./sort-products"
+import type { StoreBrand } from "@lib/types/brand"
+import BrandPicker from "./brand-picker"
 
 type RefinementListProps = {
   sortBy: SortOptions
   search?: boolean
   hideOptionsPicker?: boolean
   "data-testid"?: string
+  brands?: StoreBrand[]
+  selectedBrand?: string
 }
 
 const RefinementList = ({
   sortBy,
   hideOptionsPicker = false,
   "data-testid": dataTestId,
+  brands = [],
+  selectedBrand,
 }: RefinementListProps) => {
   const router = useRouter()
   const pathname = usePathname()
@@ -44,7 +50,7 @@ const RefinementList = ({
         router.push(nextPath)
       }
     },
-    [pathname, router, searchParams]
+    [pathname, router, searchParams],
   )
 
   const setQueryParams = (name: string, value: string) =>
@@ -52,15 +58,21 @@ const RefinementList = ({
 
   const selectedOptionValueIds = useMemo(
     () => parseOptionValueIds(searchParams),
-    [searchParams]
+    [searchParams],
   )
 
   const setOptionValueIds = (valueIds: string[]) =>
     updateQueryParams((params) => {
       params.delete(OPTION_VALUE_QUERY_KEY)
       valueIds.forEach((valueId) =>
-        params.append(OPTION_VALUE_QUERY_KEY, valueId)
+        params.append(OPTION_VALUE_QUERY_KEY, valueId),
       )
+    })
+
+  const setBrand = (handle?: string) =>
+    updateQueryParams((params) => {
+      if (handle) params.set("brand", handle)
+      else params.delete("brand")
     })
 
   return (
@@ -70,6 +82,13 @@ const RefinementList = ({
         setQueryParams={setQueryParams}
         data-testid={dataTestId}
       />
+      {!!brands.length && (
+        <BrandPicker
+          brands={brands}
+          selectedBrand={selectedBrand}
+          setBrand={setBrand}
+        />
+      )}
       {!hideOptionsPicker && (
         <OptionsPicker
           selectedValueIds={selectedOptionValueIds}

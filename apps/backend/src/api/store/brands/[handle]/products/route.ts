@@ -25,7 +25,7 @@ export async function GET(req: MedusaStoreRequest, res: MedusaResponse) {
       pagination: req.queryConfig.pagination,
       context,
     },
-    { cache: { enable: true }, locale: req.locale },
+    { cache: { enable: false }, locale: req.locale },
   );
 
   await wrapProductsWithTaxPrices(req, products as HttpTypes.StoreProduct[]);

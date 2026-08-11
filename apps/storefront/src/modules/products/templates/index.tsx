@@ -11,6 +11,7 @@ import { notFound } from "next/navigation"
 import { HttpTypes } from "@medusajs/types"
 
 import ProductActionsWrapper from "./product-actions-wrapper"
+import { retrieveProductBrand } from "@lib/data/brands"
 
 type ProductTemplateProps = {
   product: HttpTypes.StoreProduct
@@ -19,15 +20,17 @@ type ProductTemplateProps = {
   images: HttpTypes.StoreProductImage[]
 }
 
-const ProductTemplate: React.FC<ProductTemplateProps> = ({
+const ProductTemplate = async ({
   product,
   region,
   countryCode,
   images,
-}) => {
+}: ProductTemplateProps) => {
   if (!product || !product.id) {
     return notFound()
   }
+
+  const brand = await retrieveProductBrand(product.id)
 
   return (
     <main className="tixi-page pb-16">
@@ -40,7 +43,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         </div>
 
         <div className="tixi-card flex min-w-0 w-full flex-col gap-y-7 p-6 small:sticky small:top-28 small:max-w-[520px] small:p-8">
-          <ProductInfo product={product} />
+          <ProductInfo product={product} brand={brand} />
           <ProductOnboardingCta />
           <Suspense
             fallback={

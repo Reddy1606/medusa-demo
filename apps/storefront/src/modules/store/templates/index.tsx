@@ -6,20 +6,45 @@ import RefinementList from "@modules/store/components/refinement-list"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 
 import PaginatedProducts from "./paginated-products"
+import { listBrands } from "@lib/data/brands"
 
 const StoreTemplate = ({
   sortBy,
   page,
   countryCode,
   optionValueIds,
+  brand,
 }: {
   sortBy?: SortOptions
   page?: string
   countryCode: string
   optionValueIds?: OptionValueIds
+  brand?: string
 }) => {
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
+
+  return (
+    <StoreContent
+      {...{ sort, pageNumber, countryCode, optionValueIds, brand }}
+    />
+  )
+}
+
+const StoreContent = async ({
+  sort,
+  pageNumber,
+  countryCode,
+  optionValueIds,
+  brand,
+}: {
+  sort: SortOptions
+  pageNumber: number
+  countryCode: string
+  optionValueIds?: OptionValueIds
+  brand?: string
+}) => {
+  const { brands } = await listBrands({ limit: 100 })
 
   return (
     <main className="tixi-page px-6 py-12 small:py-16">
@@ -40,7 +65,7 @@ const StoreTemplate = ({
           </p>
         </div>
         <div className="flex flex-col gap-8 small:flex-row small:items-start">
-          <RefinementList sortBy={sort} />
+          <RefinementList sortBy={sort} brands={brands} selectedBrand={brand} />
           <div className="min-w-0 w-full">
             <Suspense fallback={<SkeletonProductGrid />}>
               <PaginatedProducts
@@ -48,6 +73,7 @@ const StoreTemplate = ({
                 page={pageNumber}
                 countryCode={countryCode}
                 optionValueIds={optionValueIds}
+                brand={brand}
               />
             </Suspense>
           </div>
