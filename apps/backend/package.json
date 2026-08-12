@@ -18,6 +18,7 @@
     "dev": "medusa develop",
     "lint": "medusa lint",
     "products:add-vnd-prices": "medusa exec ./src/scripts/add-vnd-product-prices.ts",
+    "catalog:setup-demo": "medusa exec ./src/scripts/setup-demo-catalog.ts",
     "shipping:setup-vietnam": "medusa exec ./src/scripts/setup-vietnam-shipping.ts",
     "store:add-vnd": "medusa exec ./src/scripts/add-vnd-currency.ts",
     "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",

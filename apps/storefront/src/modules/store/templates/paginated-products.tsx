@@ -7,6 +7,7 @@ import { SortOptions } from "@modules/store/components/refinement-list/sort-prod
 import { listBrandProducts } from "@lib/data/brands"
 import { sortProducts } from "@lib/util/sort-products"
 import { HttpTypes } from "@medusajs/types"
+import { normalizeProductOrigin } from "@lib/config/product-origins"
 
 const PRODUCT_LIMIT = 12
 
@@ -77,7 +78,8 @@ export default async function PaginatedProducts({
     })
     const matchingProducts = origin
       ? response.products.filter(
-          (product) => product.origin_country?.toLowerCase() === origin,
+          (product) =>
+            normalizeProductOrigin(product.origin_country) === origin,
         )
       : response.products
     const sorted = sortProducts(matchingProducts, sortBy || "created_at")
@@ -97,6 +99,22 @@ export default async function PaginatedProducts({
   }
 
   const totalPages = Math.ceil(count / PRODUCT_LIMIT)
+
+  if (!products.length) {
+    return (
+      <div
+        className="rounded-2xl border border-black/10 bg-white px-6 py-12 text-center"
+        data-testid="products-empty-state"
+      >
+        <h2 className="text-lg font-semibold text-black">
+          Chưa có sản phẩm phù hợp
+        </h2>
+        <p className="mt-2 text-sm text-black/55">
+          Hãy quay lại sau hoặc thử thay đổi bộ lọc hiện tại.
+        </p>
+      </div>
+    )
+  }
 
   return (
     <>

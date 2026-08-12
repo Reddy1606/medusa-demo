@@ -7,6 +7,9 @@ import { HttpTypes } from "@medusajs/types"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import { getAuthHeaders, getCacheOptions } from "./cookies"
 import { getRegion, retrieveRegion } from "./regions"
+import { normalizeProductOrigin } from "@lib/config/product-origins"
+
+const PRODUCT_REVALIDATE_SECONDS = 60
 
 type ProductListQueryParams = (HttpTypes.FindParams &
   HttpTypes.StoreProductListParams) & {
@@ -70,11 +73,11 @@ export const listProducts = async ({
           offset,
           region_id: region?.id,
           fields:
-            "*variants.calculated_price,+variants.inventory_quantity,*variants.images,*variants.options,+metadata,+tags,",
+            "*variants.calculated_price,+variants.inventory_quantity,*variants.images,*variants.options,+metadata,+tags,+origin_country",
           ...queryParams,
         },
         headers,
-        next,
+        next: { ...next, revalidate: PRODUCT_REVALIDATE_SECONDS },
         cache: "force-cache",
       },
     )
@@ -134,7 +137,7 @@ export const listProductsWithSort = async ({
 
   const matchingProducts = origin
     ? products.filter(
-        (product) => product.origin_country?.toLowerCase() === origin,
+        (product) => normalizeProductOrigin(product.origin_country) === origin,
       )
     : products
   const sortedProducts = sortProducts(matchingProducts, sortBy)

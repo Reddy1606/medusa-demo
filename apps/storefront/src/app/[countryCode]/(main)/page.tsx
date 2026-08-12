@@ -11,6 +11,7 @@ import {
 import { getRegion } from "@lib/data/regions"
 import FeaturedBrands from "@modules/home/components/featured-brands"
 import CountryDiscovery from "@modules/home/components/country-discovery"
+import CategoryShowcases from "@modules/home/components/category-showcases"
 
 export const metadata: Metadata = {
   title: "TIXIMAX | Mua sắm quốc tế dễ dàng hơn",
@@ -41,6 +42,7 @@ export default async function Home(props: {
       <ServicesSection />
       <CountryDiscovery />
       <FeaturedBrands />
+      <CategoryShowcases region={region} />
       <ul className="flex flex-col bg-[#f5c745]">
         <FeaturedProducts collections={collections} region={region} />
       </ul>

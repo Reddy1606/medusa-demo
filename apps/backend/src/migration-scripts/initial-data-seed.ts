@@ -32,7 +32,7 @@ export default async function initial_data_seed({
   const link = container.resolve(ContainerRegistrationKeys.LINK);
   const query = container.resolve(ContainerRegistrationKeys.QUERY);
   const fulfillmentModuleService = container.resolve(
-    ModuleRegistrationName.FULFILLMENT
+    ModuleRegistrationName.FULFILLMENT,
   );
 
   const countries = ["gb", "de", "dk", "se", "fr", "es", "it"];
@@ -126,7 +126,7 @@ export default async function initial_data_seed({
 
   logger.info("Seeding stock location data...");
   const { result: stockLocationResult } = await createStockLocationsWorkflow(
-    container
+    container,
   ).run({
     input: {
       locations: [
@@ -302,7 +302,7 @@ export default async function initial_data_seed({
   logger.info("Seeding product data...");
 
   const { result: categoryResult } = await createProductCategoriesWorkflow(
-    container
+    container,
   ).run({
     input: {
       product_categories: [
@@ -319,7 +319,7 @@ export default async function initial_data_seed({
           is_active: true,
         },
         {
-          name: "Merch",
+          name: "Accessories",
           is_active: true,
         },
       ],
@@ -327,7 +327,7 @@ export default async function initial_data_seed({
   });
 
   const { result: productOptionsResult } = await createProductOptionsWorkflow(
-    container
+    container,
   ).run({
     input: {
       product_options: [
@@ -373,10 +373,7 @@ export default async function initial_data_seed({
               url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-white-back.png",
             },
           ],
-          options: [
-            { id: sizeOption.id },
-            { id: colorOption.id },
-          ],
+          options: [{ id: sizeOption.id }, { id: colorOption.id }],
           variants: [
             {
               title: "S / Black",
@@ -724,7 +721,7 @@ export default async function initial_data_seed({
         {
           title: "Medusa Shorts",
           category_ids: [
-            categoryResult.find((cat) => cat.name === "Merch")!.id,
+            categoryResult.find((cat) => cat.name === "Accessories")!.id,
           ],
           description:
             "Reimagine the feeling of classic shorts. With our cotton shorts, everyday essentials no longer have to be ordinary.",

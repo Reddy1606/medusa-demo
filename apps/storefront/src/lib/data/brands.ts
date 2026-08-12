@@ -103,7 +103,7 @@ export const listBrandProducts = async ({
           offset,
           order: "-created_at",
           fields:
-            "*variants.calculated_price,+variants.inventory_quantity,*variants.images,*variants.options,+metadata,+tags,",
+            "*variants.calculated_price,+variants.inventory_quantity,*variants.images,*variants.options,+metadata,+tags,+origin_country",
           ...(optionValueIds?.length
             ? { option_value_id: optionValueIds }
             : {}),

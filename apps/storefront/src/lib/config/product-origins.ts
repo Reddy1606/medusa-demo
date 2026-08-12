@@ -12,9 +12,18 @@ export const PRODUCT_ORIGINS: ProductOrigin[] = [
   { code: "fr", label: "Pháp", flag: "🇫🇷" },
 ]
 
-export const normalizeProductOrigin = (value?: string) => {
+export const normalizeProductOrigin = (value?: string | null) => {
   const normalized = value?.trim().toLowerCase()
-  return PRODUCT_ORIGINS.some((origin) => origin.code === normalized)
-    ? normalized
-    : undefined
+  if (!normalized) return undefined
+
+  const englishRegionNames = new Intl.DisplayNames(["en"], { type: "region" })
+
+  return PRODUCT_ORIGINS.find((origin) => {
+    const englishName = englishRegionNames.of(origin.code.toUpperCase())
+    return (
+      origin.code === normalized ||
+      origin.label.toLowerCase() === normalized ||
+      englishName?.toLowerCase() === normalized
+    )
+  })?.code
 }
