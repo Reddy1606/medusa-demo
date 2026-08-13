@@ -4,6 +4,8 @@ import { ArrowRight } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import ProductPreview from "@modules/products/components/product-preview"
+import { listCategoryBrands } from "@lib/data/brands"
+import BrandImage from "@modules/brands/components/brand-image"
 
 const PRODUCT_LIMIT = 8
 const CHILD_CATEGORY_LIMIT = 6
@@ -24,10 +26,11 @@ export async function loadCategoryShowcase(
         "*variants.calculated_price,+variants.inventory_quantity,*variants.images,*variants.options",
     },
   })
+  const { brands } = await listCategoryBrands(category.id)
 
   if (!products.length) return null
 
-  return { category, config, products, region }
+  return { category, config, products, region, brands: brands.slice(0, 6) }
 }
 
 export default function CategoryShowcase({
@@ -35,6 +38,7 @@ export default function CategoryShowcase({
   config,
   products,
   region,
+  brands,
 }: NonNullable<Awaited<ReturnType<typeof loadCategoryShowcase>>>) {
   const children = (category.category_children || []).slice(
     0,
@@ -90,9 +94,8 @@ export default function CategoryShowcase({
       </div>
 
       <div className="mt-8 grid min-w-0 gap-5 large:grid-cols-[minmax(240px,0.72fr)_minmax(0,2.28fr)]">
-        <LocalizedClientLink
-          href={`/categories/${category.handle}`}
-          className={`group relative flex aspect-[16/7] min-h-44 overflow-hidden rounded-2xl border border-[#d7a921]/35 bg-[#f5c745] p-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black small:aspect-[3/1] small:p-8 large:aspect-auto large:min-h-[560px] ${
+        <div
+          className={`group relative flex aspect-[16/7] min-h-44 overflow-hidden rounded-2xl border border-[#d7a921]/35 bg-[#f5c745] p-4 small:aspect-[3/1] small:p-6 large:aspect-auto large:min-h-[560px] large:p-8 ${
             config.image ? "text-white" : "text-black"
           }`}
           aria-label={`Khám phá danh mục ${category.name}`}
@@ -116,10 +119,34 @@ export default function CategoryShowcase({
               config.image ? "border-white/10" : "border-black/5"
             }`}
           />
-          <span className="relative mt-auto max-w-[16rem] text-2xl font-semibold leading-tight tracking-[-0.03em] small:text-3xl">
-            {category.name}
-          </span>
-        </LocalizedClientLink>
+          <div className="relative mt-auto w-full">
+            {!!brands.length && (
+              <ul className="mb-4 grid max-w-[22rem] grid-cols-2 gap-2 small:mb-5 small:gap-2.5 large:max-w-none">
+                {brands.map((brand) => (
+                  <li key={brand.id} className="min-w-0">
+                    <LocalizedClientLink
+                      href={`/categories/${category.handle}?brand=${encodeURIComponent(brand.handle)}`}
+                      aria-label={`Xem sản phẩm ${brand.name} trong danh mục ${category.name}`}
+                      className="flex h-12 min-w-0 items-center justify-center overflow-hidden rounded-lg border border-black/10 bg-white/95 p-2 shadow-sm transition hover:border-[#d7a921] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8b51e] small:h-14 large:h-16"
+                    >
+                      <BrandImage
+                        src={brand.logo_url}
+                        name={brand.name}
+                        alt={`${brand.name} logo`}
+                      />
+                    </LocalizedClientLink>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <LocalizedClientLink
+              href={`/categories/${category.handle}`}
+              className="inline-block max-w-[16rem] rounded-sm text-2xl font-semibold leading-tight tracking-[-0.03em] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8b51e] small:text-3xl"
+            >
+              {category.name}
+            </LocalizedClientLink>
+          </div>
+        </div>
 
         <ul className="grid min-w-0 grid-cols-2 gap-4 small:grid-cols-3 small:gap-5 large:grid-cols-4">
           {products.map((product) => (

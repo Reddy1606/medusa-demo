@@ -9,24 +9,29 @@ import PaginatedProducts from "@modules/store/templates/paginated-products"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { HttpTypes } from "@medusajs/types"
 import { OptionValueIds } from "@lib/util/product-option-filters"
+import { listBrands } from "@lib/data/brands"
 
-export default function CategoryTemplate({
+export default async function CategoryTemplate({
   category,
   sortBy,
   page,
   countryCode,
   optionValueIds,
+  brand,
 }: {
   category: HttpTypes.StoreProductCategory
   sortBy?: SortOptions
   page?: string
   countryCode: string
   optionValueIds?: OptionValueIds
+  brand?: string
 }) {
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
 
   if (!category || !countryCode) notFound()
+
+  const { brands } = await listBrands({ limit: 100 })
 
   const parents = [] as HttpTypes.StoreProductCategory[]
 
@@ -83,6 +88,8 @@ export default function CategoryTemplate({
           sortBy={sort}
           data-testid="sort-by-container"
           hideOptionsPicker
+          brands={brands}
+          selectedBrand={brand}
         />
         <div className="min-w-0 flex-1">
           <Suspense
@@ -98,6 +105,7 @@ export default function CategoryTemplate({
               categoryId={category.id}
               countryCode={countryCode}
               optionValueIds={optionValueIds}
+              brand={brand}
             />
           </Suspense>
         </div>

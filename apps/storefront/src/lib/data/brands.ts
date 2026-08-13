@@ -40,6 +40,22 @@ export const listBrands = async ({
   )
 }
 
+export const listCategoryBrands = async (categoryId: string) => {
+  const next = await getCacheOptions(`category-brands-${categoryId}`)
+  return safeRequest(
+    () =>
+      sdk.client.fetch<StoreBrandListResponse>(
+        `/store/categories/${categoryId}/brands`,
+        {
+          method: "GET",
+          next: { ...next, revalidate: BRAND_LIST_REVALIDATE_SECONDS },
+          cache: "force-cache",
+        },
+      ),
+    { brands: [], count: 0, limit: 6, offset: 0 },
+  )
+}
+
 export const retrieveBrandByHandle = async (
   handle: string,
 ): Promise<StoreBrand | null> => {
@@ -81,12 +97,14 @@ export const listBrandProducts = async ({
   page = 1,
   limit = 12,
   optionValueIds,
+  categoryId,
 }: {
   handle: string
   regionId: string
   page?: number
   limit?: number
   optionValueIds?: string[]
+  categoryId?: string
 }) => {
   const offset = (Math.max(page, 1) - 1) * limit
   const headers = await getAuthHeaders()
@@ -107,6 +125,7 @@ export const listBrandProducts = async ({
           ...(optionValueIds?.length
             ? { option_value_id: optionValueIds }
             : {}),
+          ...(categoryId ? { category_id: [categoryId] } : {}),
         },
         headers,
         next: { ...next, revalidate: BRAND_PRODUCTS_REVALIDATE_SECONDS },

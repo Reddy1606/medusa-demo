@@ -15,6 +15,7 @@ type Props = {
       sortBy?: SortOptions
       page?: string
       optionValueIds?: string | string[]
+      brand?: string
     }
   >
 }
@@ -27,11 +28,11 @@ export async function generateStaticParams() {
   }
 
   const countryCodes = await listRegions().then((regions: StoreRegion[]) =>
-    regions?.map((r) => r.countries?.map((c) => c.iso_2)).flat()
+    regions?.map((r) => r.countries?.map((c) => c.iso_2)).flat(),
   )
 
   const categoryHandles = product_categories.map(
-    (category: HttpTypes.StoreProductCategory) => category.handle
+    (category: HttpTypes.StoreProductCategory) => category.handle,
   )
 
   const staticParams = countryCodes
@@ -39,7 +40,7 @@ export async function generateStaticParams() {
       categoryHandles.map((handle: string) => ({
         countryCode,
         category: [handle],
-      }))
+      })),
     )
     .flat()
 
@@ -70,7 +71,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export default async function CategoryPage(props: Props) {
   const searchParams = await props.searchParams
   const params = await props.params
-  const { sortBy, page } = searchParams
+  const { sortBy, page, brand } = searchParams
   const optionValueIds = parseOptionValueIds(searchParams)
 
   const productCategory = await getCategoryByHandle(params.category)
@@ -86,6 +87,7 @@ export default async function CategoryPage(props: Props) {
       page={page}
       countryCode={params.countryCode}
       optionValueIds={optionValueIds}
+      brand={brand}
     />
   )
 }

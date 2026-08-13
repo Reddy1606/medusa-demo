@@ -75,6 +75,7 @@ export default async function PaginatedProducts({
       regionId: region.id,
       limit: 100,
       optionValueIds,
+      categoryId,
     })
     const matchingProducts = origin
       ? response.products.filter(
