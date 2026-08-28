@@ -9,17 +9,28 @@ const BRAND_LIMIT = 6;
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
+  const requestedCategoryIds = req.query.category_id;
+  const categoryIds = Array.from(
+    new Set([
+      req.params.id,
+      ...(Array.isArray(requestedCategoryIds)
+        ? requestedCategoryIds
+        : requestedCategoryIds
+          ? [requestedCategoryIds]
+          : []),
+    ]),
+  ).filter((id): id is string => typeof id === "string" && Boolean(id));
   const { data: categories } = await query.graph({
     entity: "product_category",
     fields: ["products.id"],
-    filters: { id: req.params.id },
-    pagination: { take: 1 },
+    filters: { id: categoryIds },
+    pagination: { take: categoryIds.length },
   });
   const productIds = [
     ...new Set(
-      (
-        categories[0] as { products?: Array<{ id: string }> } | undefined
-      )?.products?.map((product) => product.id) ?? [],
+      (categories as Array<{ products?: Array<{ id: string }> }>).flatMap(
+        (category) => category.products?.map((product) => product.id) ?? [],
+      ),
     ),
   ];
 

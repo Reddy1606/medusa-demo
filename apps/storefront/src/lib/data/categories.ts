@@ -4,7 +4,7 @@ import { getCacheOptions } from "./cookies"
 
 export const listCategories = async (
   query?: Record<string, unknown>,
-  options?: { cache?: RequestCache },
+  options?: { cache?: RequestCache; revalidate?: number }
 ) => {
   const next = {
     ...(await getCacheOptions("categories")),
@@ -22,9 +22,18 @@ export const listCategories = async (
           limit,
           ...query,
         },
-        ...(options?.cache === "no-store" ? {} : { next }),
+        ...(options?.cache === "no-store"
+          ? {}
+          : {
+              next: {
+                ...next,
+                ...(options?.revalidate
+                  ? { revalidate: options.revalidate }
+                  : {}),
+              },
+            }),
         cache: options?.cache ?? "force-cache",
-      },
+      }
     )
     .then(({ product_categories }) => product_categories)
 }
@@ -46,7 +55,7 @@ export const getCategoryByHandle = async (categoryHandle: string[]) => {
         },
         next,
         cache: "force-cache",
-      },
+      }
     )
     .then(({ product_categories }) => product_categories[0])
 }

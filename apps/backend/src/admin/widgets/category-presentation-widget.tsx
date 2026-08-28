@@ -20,49 +20,38 @@ import {
 import {
   CategoryPresentation,
   DEFAULT_CATEGORY_PRESENTATION,
-  MAX_HOMEPAGE_RANK,
   isValidAssetLocation,
   parseCategoryPresentation,
 } from "../types/category-presentation";
+import { useNavigate } from "react-router-dom";
 
 type CategoryPresentationWidgetProps = {
   data: { id: string; name: string };
 };
 
-type FormValues = Omit<CategoryPresentation, "homepage_rank"> & {
-  homepage_rank: string;
-};
+type FormValues = CategoryPresentation;
 
 type FormErrors = Partial<
-  Record<
-    "homepage_rank" | "homepage_title" | "homepage_description" | "banner_url",
-    string
-  >
+  Record<"homepage_title" | "homepage_description" | "banner_url", string>
 >;
-
-const toFormValues = (value: CategoryPresentation): FormValues => ({
-  ...value,
-  homepage_rank: value.homepage_rank?.toString() ?? "",
-});
 
 const CategoryPresentationWidget = ({
   data: category,
 }: CategoryPresentationWidgetProps) => {
+  const navigate = useNavigate();
   const { data, isLoading, isError, refetch } = useCategoryPresentation(
     category.id,
   );
   const updatePresentation = useUpdateCategoryPresentation(category.id);
-  const [values, setValues] = useState<FormValues>(() =>
-    toFormValues(DEFAULT_CATEGORY_PRESENTATION),
+  const [values, setValues] = useState<FormValues>(
+    () => DEFAULT_CATEGORY_PRESENTATION,
   );
   const [errors, setErrors] = useState<FormErrors>({});
   const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     if (data?.product_category) {
-      setValues(
-        toFormValues(parseCategoryPresentation(data.product_category.metadata)),
-      );
+      setValues(parseCategoryPresentation(data.product_category.metadata));
       setErrors({});
     }
   }, [data]);
@@ -80,18 +69,6 @@ const CategoryPresentationWidget = ({
     const title = values.homepage_title?.trim() ?? "";
     const description = values.homepage_description?.trim() ?? "";
     const bannerUrl = values.banner_url?.trim() ?? "";
-    const rank = values.homepage_rank.trim();
-
-    if (rank) {
-      const parsedRank = Number(rank);
-      if (
-        !Number.isInteger(parsedRank) ||
-        parsedRank < 0 ||
-        parsedRank > MAX_HOMEPAGE_RANK
-      ) {
-        nextErrors.homepage_rank = `Enter a whole number from 0 to ${MAX_HOMEPAGE_RANK}.`;
-      }
-    }
     if (title.length > 255) {
       nextErrors.homepage_title =
         "Homepage title must be 255 characters or fewer.";
@@ -118,9 +95,7 @@ const CategoryPresentationWidget = ({
     const bannerUrl = values.banner_url?.trim() || null;
     const presentation: CategoryPresentation = {
       show_on_homepage: values.show_on_homepage,
-      homepage_rank: values.homepage_rank.trim()
-        ? Number(values.homepage_rank)
-        : null,
+      homepage_rank: values.homepage_rank,
       homepage_title: title,
       homepage_description: description,
       banner_url: bannerUrl,
@@ -188,28 +163,25 @@ const CategoryPresentationWidget = ({
             />
           </div>
 
-          <div className="flex flex-col gap-y-2">
-            <Label htmlFor="category-homepage-rank">Homepage order</Label>
-            <Input
-              id="category-homepage-rank"
-              type="number"
-              min={0}
-              max={MAX_HOMEPAGE_RANK}
-              step={1}
-              value={values.homepage_rank}
-              onChange={(event) =>
-                setField("homepage_rank", event.target.value)
-              }
-              aria-invalid={Boolean(errors.homepage_rank)}
-              disabled={disabled}
-            />
-            {errors.homepage_rank ? (
-              <Hint variant="error">{errors.homepage_rank}</Hint>
-            ) : (
-              <Hint>
-                Recommended when shown; duplicate or empty orders are allowed.
-              </Hint>
-            )}
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <Label>Homepage position</Label>
+              <Text size="small" className="text-ui-fg-subtle">
+                {values.show_on_homepage && values.homepage_rank !== null
+                  ? `Position ${values.homepage_rank}`
+                  : values.show_on_homepage
+                    ? "Assigned automatically when you save"
+                    : "Not shown on the homepage"}
+              </Text>
+            </div>
+            <Button
+              type="button"
+              variant="secondary"
+              size="small"
+              onClick={() => navigate("/homepage-categories")}
+            >
+              Manage homepage ordering →
+            </Button>
           </div>
 
           <div className="flex flex-col gap-y-2">

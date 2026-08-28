@@ -1,7 +1,9 @@
-import { CATEGORY_SHOWCASES } from "@lib/config/category-showcases"
 import { listCategories } from "@lib/data/categories"
+import { selectCategoryShowcases } from "@lib/util/category-showcases"
 import { HttpTypes } from "@medusajs/types"
 import CategoryShowcase, { loadCategoryShowcase } from "./category-showcase"
+
+const CATEGORY_PRESENTATION_REVALIDATE_SECONDS = 60
 
 export default async function CategoryShowcases({
   region,
@@ -12,24 +14,22 @@ export default async function CategoryShowcases({
     {
       limit: 100,
       include_descendants_tree: true,
-      fields: "id,name,handle,description,*category_children",
+      fields: "id,name,handle,description,rank,metadata,*category_children",
     },
-    { cache: "no-store" },
+    {
+      cache: "force-cache",
+      revalidate: CATEGORY_PRESENTATION_REVALIDATE_SECONDS,
+    }
   )
-  const categoriesByHandle = new Map(
-    categories.map((category) => [category.handle, category]),
-  )
+  const candidates = selectCategoryShowcases(categories)
 
   const showcases = await Promise.all(
-    CATEGORY_SHOWCASES.map((config) => {
-      const category = categoriesByHandle.get(config.handle)
-      return category
-        ? loadCategoryShowcase(category, config, region)
-        : Promise.resolve(null)
-    }),
+    candidates.map(({ category, presentation }) =>
+      loadCategoryShowcase(category, presentation, region)
+    )
   )
   const availableShowcases = showcases.filter(
-    (showcase): showcase is NonNullable<typeof showcase> => !!showcase,
+    (showcase): showcase is NonNullable<typeof showcase> => !!showcase
   )
 
   if (!availableShowcases.length) return null

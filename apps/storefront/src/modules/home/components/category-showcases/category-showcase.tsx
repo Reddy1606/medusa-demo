@@ -1,5 +1,5 @@
 import { listProducts } from "@lib/data/products"
-import type { CategoryShowcaseConfig } from "@lib/config/category-showcases"
+import type { CategoryShowcasePresentation } from "@lib/util/category-showcases"
 import { ArrowRight } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
@@ -9,33 +9,64 @@ import BrandImage from "@modules/brands/components/brand-image"
 
 const PRODUCT_LIMIT = 8
 const CHILD_CATEGORY_LIMIT = 6
+const BRAND_LIMIT = 6
+
+export const collectCategoryTreeIds = (
+  category: HttpTypes.StoreProductCategory,
+) => {
+  const ids = new Set<string>()
+  const pending = [category]
+
+  while (pending.length) {
+    const current = pending.pop()
+    if (!current || ids.has(current.id)) continue
+
+    ids.add(current.id)
+    pending.push(...(current.category_children ?? []))
+  }
+
+  return Array.from(ids)
+}
 
 export async function loadCategoryShowcase(
   category: HttpTypes.StoreProductCategory,
-  config: CategoryShowcaseConfig,
+  presentation: CategoryShowcasePresentation,
   region: HttpTypes.StoreRegion,
 ) {
+  const categoryIds = collectCategoryTreeIds(category)
   const {
     response: { products },
   } = await listProducts({
     regionId: region.id,
     queryParams: {
-      category_id: [category.id],
+      category_id: categoryIds,
       limit: PRODUCT_LIMIT,
       fields:
         "*variants.calculated_price,+variants.inventory_quantity,*variants.images,*variants.options",
     },
   })
-  const { brands } = await listCategoryBrands(category.id)
+  const { brands } = await listCategoryBrands(categoryIds)
+  const uniqueProducts = Array.from(
+    new Map(products.map((product) => [product.id, product])).values(),
+  ).slice(0, PRODUCT_LIMIT)
+  const uniqueBrands = Array.from(
+    new Map(brands.map((brand) => [brand.id, brand])).values(),
+  ).slice(0, BRAND_LIMIT)
 
-  if (!products.length) return null
+  if (!uniqueProducts.length) return null
 
-  return { category, config, products, region, brands: brands.slice(0, 6) }
+  return {
+    category,
+    presentation,
+    products: uniqueProducts,
+    region,
+    brands: uniqueBrands,
+  }
 }
 
 export default function CategoryShowcase({
   category,
-  config,
+  presentation,
   products,
   region,
   brands,
@@ -58,10 +89,10 @@ export default function CategoryShowcase({
           id={`category-showcase-${category.id}`}
           className="mt-3 text-3xl font-semibold tracking-[-0.03em] text-black small:text-4xl"
         >
-          {config.title || category.name}
+          {presentation.title}
         </h2>
         <p className="mt-3 text-sm leading-6 text-black/55 small:text-base">
-          {category.description || config.description}
+          {presentation.description}
         </p>
       </div>
 
@@ -78,7 +109,7 @@ export default function CategoryShowcase({
                     href={`/categories/${child.handle}`}
                     className="rounded-sm text-sm font-medium text-black/60 underline-offset-4 hover:text-[#9a6800] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a87200]"
                   >
-                    {config.childLabels[child.handle] || child.name}
+                    {presentation.childLabels[child.handle] || child.name}
                   </LocalizedClientLink>
                 </li>
               ))}
@@ -93,19 +124,19 @@ export default function CategoryShowcase({
         </LocalizedClientLink>
       </div>
 
-      <div className="mt-8 grid min-w-0 gap-5 large:grid-cols-[minmax(240px,0.72fr)_minmax(0,2.28fr)]">
+      <div className="mt-8 grid min-w-0 grid-cols-[minmax(0,1fr)] items-start gap-5 large:grid-cols-[minmax(240px,0.72fr)_minmax(0,2.28fr)]">
         <div
-          className={`group relative flex aspect-[16/7] min-h-44 overflow-hidden rounded-2xl border border-[#d7a921]/35 bg-[#f5c745] p-4 small:aspect-[3/1] small:p-6 large:aspect-auto large:min-h-[560px] large:p-8 ${
-            config.image ? "text-white" : "text-black"
+          className={`group relative flex h-44 min-w-0 w-full overflow-hidden rounded-2xl border border-[#d7a921]/35 bg-[#f5c745] p-4 small:aspect-[3/1] small:h-auto small:p-6 large:aspect-auto large:h-[790px] large:p-8 ${
+            presentation.image ? "text-white" : "text-black"
           }`}
           aria-label={`Khám phá danh mục ${category.name}`}
         >
-          {config.image && (
+          {presentation.image && (
             <>
               <span
                 aria-hidden="true"
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-[1.03]"
-                style={{ backgroundImage: `url(${config.image})` }}
+                style={{ backgroundImage: `url(${presentation.image})` }}
               />
               <span
                 aria-hidden="true"
@@ -116,7 +147,7 @@ export default function CategoryShowcase({
           <span
             aria-hidden="true"
             className={`absolute -bottom-14 -right-10 h-44 w-44 rounded-full border-[28px] transition-transform duration-500 group-hover:scale-110 ${
-              config.image ? "border-white/10" : "border-black/5"
+              presentation.image ? "border-white/10" : "border-black/5"
             }`}
           />
           <div className="relative mt-auto w-full">
@@ -125,7 +156,9 @@ export default function CategoryShowcase({
                 {brands.map((brand) => (
                   <li key={brand.id} className="min-w-0">
                     <LocalizedClientLink
-                      href={`/categories/${category.handle}?brand=${encodeURIComponent(brand.handle)}`}
+                      href={`/categories/${
+                        category.handle
+                      }?brand=${encodeURIComponent(brand.handle)}`}
                       aria-label={`Xem sản phẩm ${brand.name} trong danh mục ${category.name}`}
                       className="flex h-12 min-w-0 items-center justify-center overflow-hidden rounded-lg border border-black/10 bg-white/95 p-2 shadow-sm transition hover:border-[#d7a921] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8b51e] small:h-14 large:h-16"
                     >
@@ -148,13 +181,13 @@ export default function CategoryShowcase({
           </div>
         </div>
 
-        <ul className="grid min-w-0 grid-cols-2 gap-4 small:grid-cols-3 small:gap-5 large:grid-cols-4">
+        <ul className="grid min-w-0 grid-cols-2 content-start items-start gap-4 small:grid-cols-3 small:gap-5 large:grid-cols-4">
           {products.map((product) => (
             <li
               key={product.id}
-              className="tixi-card min-w-0 overflow-hidden p-3 transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_18px_42px_rgba(17,17,17,0.12)] small:p-4"
+              className="tixi-card min-w-0 overflow-hidden p-3 transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_18px_42px_rgba(17,17,17,0.12)] small:p-4 large:h-[385px]"
             >
-              <ProductPreview product={product} region={region} />
+              <ProductPreview product={product} region={region} equalHeight />
             </li>
           ))}
         </ul>

@@ -36,28 +36,37 @@ export const listBrands = async ({
       query: { q, limit, offset, order: "name" },
       next: { ...next, revalidate: BRAND_LIST_REVALIDATE_SECONDS },
       cache: "force-cache",
-    }),
+    })
   )
 }
 
-export const listCategoryBrands = async (categoryId: string) => {
-  const next = await getCacheOptions(`category-brands-${categoryId}`)
+export const listCategoryBrands = async (categoryIds: string[]) => {
+  const [categoryId] = categoryIds
+  const next = await getCacheOptions(
+    `category-brands-${[...categoryIds].sort().join("-")}`
+  )
+
+  if (!categoryId) {
+    return { brands: [], count: 0, limit: 6, offset: 0 }
+  }
+
   return safeRequest(
     () =>
       sdk.client.fetch<StoreBrandListResponse>(
         `/store/categories/${categoryId}/brands`,
         {
           method: "GET",
+          query: { category_id: categoryIds },
           next: { ...next, revalidate: BRAND_LIST_REVALIDATE_SECONDS },
           cache: "force-cache",
-        },
+        }
       ),
-    { brands: [], count: 0, limit: 6, offset: 0 },
+    { brands: [], count: 0, limit: 6, offset: 0 }
   )
 }
 
 export const retrieveBrandByHandle = async (
-  handle: string,
+  handle: string
 ): Promise<StoreBrand | null> => {
   const next = await getCacheOptions(`brand-${handle}`)
   const response = await safeRequest(
@@ -67,13 +76,13 @@ export const retrieveBrandByHandle = async (
         next,
         cache: "force-cache",
       }),
-    { brand: null as StoreBrand | null },
+    { brand: null as StoreBrand | null }
   )
   return response.brand
 }
 
 export const retrieveProductBrand = async (
-  productId: string,
+  productId: string
 ): Promise<StoreBrand | null> => {
   const next = await getCacheOptions(`product-brand-${productId}`)
   const response = await safeRequest(
@@ -84,9 +93,9 @@ export const retrieveProductBrand = async (
           method: "GET",
           next: { ...next, revalidate: BRAND_PRODUCTS_REVALIDATE_SECONDS },
           cache: "force-cache",
-        },
+        }
       ),
-    { brand: null },
+    { brand: null }
   )
   return response.brand
 }
@@ -130,7 +139,7 @@ export const listBrandProducts = async ({
         headers,
         next: { ...next, revalidate: BRAND_PRODUCTS_REVALIDATE_SECONDS },
         cache: "force-cache",
-      },
-    ),
+      }
+    )
   )
 }
